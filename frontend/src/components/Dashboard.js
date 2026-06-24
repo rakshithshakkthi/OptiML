@@ -54,7 +54,7 @@ export default function Dashboard() {
         setSystemStats(data);
       }
     } catch (err) {
-      console.error('Error fetching system stats:', err);
+      console.warn('Transient error fetching system stats:', err.message || err);
     }
   };
 
@@ -226,7 +226,7 @@ export default function Dashboard() {
           });
         }
       } catch (err) {
-        console.error('Polling error:', err);
+        console.warn('Transient polling error:', err.message || err);
       }
     }, 1200);
   };
