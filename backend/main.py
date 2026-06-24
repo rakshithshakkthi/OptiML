@@ -379,6 +379,7 @@ async def root():
         "message": "Welcome to the OptiML Backend API! The service is online and healthy.",
         "docs": "/docs",
         "health": "/health",
+        "allowed_origins": allowed_origins,
         "info": "This is the backend API. If you are looking for the OptiML user interface, please open your Vercel frontend URL or run the Next.js frontend locally."
     }
 
