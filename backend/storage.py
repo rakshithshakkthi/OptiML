@@ -3,13 +3,23 @@ import shutil
 from supabase import create_client, Client
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
+if SUPABASE_URL:
+    SUPABASE_URL = SUPABASE_URL.strip().rstrip("/")
+    if SUPABASE_URL.endswith("/rest/v1"):
+        SUPABASE_URL = SUPABASE_URL[:-8]
+    elif SUPABASE_URL.endswith("rest/v1"):
+        SUPABASE_URL = SUPABASE_URL[:-7]
+    SUPABASE_URL = SUPABASE_URL.rstrip("/")
+
 SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_ANON_KEY")
+if SUPABASE_KEY:
+    SUPABASE_KEY = SUPABASE_KEY.strip()
 
 supabase_client = None
 if SUPABASE_URL and SUPABASE_KEY:
     try:
         supabase_client = create_client(SUPABASE_URL, SUPABASE_KEY)
-        print("Initialized Supabase Storage client.")
+        print(f"Initialized Supabase Storage client with URL: {SUPABASE_URL}")
     except Exception as e:
         print(f"Error initializing Supabase client: {e}")
 
