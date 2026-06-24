@@ -372,15 +372,62 @@ async def get_system_stats_endpoint():
 @app.get("/")
 async def root():
     """
-    Friendly root endpoint explaining that this is the backend API.
+    Friendly root endpoint with system diagnostics.
     """
+    diagnostics = {}
+    
+    # 1. Test database connection
+    try:
+        from sqlalchemy import text
+        db = database.SessionLocal()
+        db.execute(text("SELECT 1"))
+        diagnostics["database"] = "Connected successfully"
+        db.close()
+    except Exception as db_err:
+        diagnostics["database"] = f"Failed: {str(db_err)}"
+        
+    # 2. Test Supabase Client & Storage
+    if storage.supabase_client:
+        diagnostics["supabase_url"] = storage.SUPABASE_URL
+        try:
+            buckets = storage.supabase_client.storage.list_buckets()
+            diagnostics["supabase_storage"] = {
+                "status": "Connected successfully",
+                "buckets": [b.name for b in buckets]
+            }
+        except Exception as storage_err:
+            diagnostics["supabase_storage"] = {
+                "status": f"Failed with error: {str(storage_err)}"
+            }
+            # Execute raw HTTP request using httpx to pinpoint exact API status/body
+            try:
+                import httpx
+                headers = {
+                    "Authorization": f"Bearer {storage.SUPABASE_KEY}",
+                    "apikey": storage.SUPABASE_KEY
+                }
+                # Storage v1 buckets endpoint
+                url = f"{storage.SUPABASE_URL}/storage/v1/bucket"
+                response = httpx.get(url, headers=headers, timeout=5.0)
+                diagnostics["supabase_storage_raw_api"] = {
+                    "url": url,
+                    "status_code": response.status_code,
+                    "response_body": response.text[:500]
+                }
+            except Exception as raw_err:
+                diagnostics["supabase_storage_raw_api"] = {
+                    "error": f"Failed raw API diagnostic: {str(raw_err)}"
+                }
+    else:
+        diagnostics["supabase_client"] = "Not initialized (missing environment variables)"
+        
     return {
         "status": "healthy",
-        "message": "Welcome to the OptiML Backend API! The service is online and healthy.",
+        "message": "Welcome to the OptiML Backend API!",
+        "diagnostics": diagnostics,
         "docs": "/docs",
         "health": "/health",
         "allowed_origins": allowed_origins,
-        "info": "This is the backend API. If you are looking for the OptiML user interface, please open your Vercel frontend URL or run the Next.js frontend locally."
     }
 
 @app.get("/health")
