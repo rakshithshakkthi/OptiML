@@ -20,7 +20,7 @@ from ml.training import train_all_models
 from ml.explanation import generate_report
 from ml.report import generate_pdf_report
 
-app = FastAPI(title="OptiML API", version="1.0.0")
+app = FastAPI(title="OptiML API", version="1.0.1")
 
 # Enable CORS for Next.js frontend (production Vercel and local development)
 allowed_origins_str = os.getenv("ALLOWED_ORIGINS")
