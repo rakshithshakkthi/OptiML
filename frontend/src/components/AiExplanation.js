@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { FileDown, Copy, Check, FileText } from 'lucide-react';
+import { API_URL } from '../config';
 
 export default function AiExplanation({ jobId, reportMarkdown }) {
   const [copied, setCopied] = useState(false);
@@ -13,7 +14,7 @@ export default function AiExplanation({ jobId, reportMarkdown }) {
   };
 
   const handleDownloadPdf = () => {
-    window.open(`http://127.0.0.1:8000/results/${jobId}/pdf`, '_blank');
+    window.open(`${API_URL}/results/${jobId}/pdf`, '_blank');
   };
 
   // Custom simple markdown parser to render report safely and cleanly

@@ -1,0 +1,54 @@
+name: CI Build & Verify
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  verify-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          cd backend && pip install -r requirements.txt
+
+      - name: Verify python files syntax
+        run: |
+          python -m py_compile backend/*.py backend/ml/*.py
+
+  verify-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: './frontend/package-lock.json'
+
+      - name: Install dependencies
+        run: |
+          cd frontend && npm ci
+
+      - name: Run ESLint Checks
+        run: |
+          cd frontend && npm run lint
+
+      - name: Next.js Compile & Build
+        run: |
+          cd frontend && npm run build
+        env:
+          NEXT_PUBLIC_API_URL: https://mock-api.onrender.com

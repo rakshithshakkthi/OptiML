@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { Upload, FileText, Database, ArrowRight, Play } from 'lucide-react';
+import { API_URL } from '../config';
 
 export default function CsvUpload({ onUploadSuccess }) {
   const [dragActive, setDragActive] = useState(false);
@@ -56,7 +57,7 @@ export default function CsvUpload({ onUploadSuccess }) {
     formData.append('file', fileToUpload);
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/upload-dataset', {
+      const response = await fetch(`${API_URL}/upload-dataset`, {
         method: 'POST',
         body: formData,
       });

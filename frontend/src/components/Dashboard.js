@@ -14,6 +14,7 @@ import DataPreview from './DataPreview';
 import ModelBattle from './ModelBattle';
 import Leaderboard from './Leaderboard';
 import AiExplanation from './AiExplanation';
+import { API_URL } from '../config';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('UPLOAD'); // OVERVIEW, UPLOAD, PREVIEW, BATTLE, RESULTS
@@ -47,7 +48,7 @@ export default function Dashboard() {
 
   const fetchSystemStats = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/system-stats');
+      const res = await fetch(`${API_URL}/system-stats`);
       if (res.ok) {
         const data = await res.json();
         setSystemStats(data);
@@ -79,7 +80,7 @@ export default function Dashboard() {
   const checkBackendHealth = async () => {
     setBackendHealth('CHECKING');
     try {
-      const res = await fetch('http://127.0.0.1:8000/results/ping-health-check').catch(() => null);
+      const res = await fetch(`${API_URL}/results/ping-health-check`).catch(() => null);
       // If the server responds (even with 404 since ping-health-check is not an endpoint), it means it's ONLINE
       if (res && (res.status === 200 || res.status === 404)) {
         setBackendHealth('ONLINE');
@@ -132,7 +133,7 @@ export default function Dashboard() {
   const startTrainingJob = async (onInit) => {
     onInit();
     try {
-      const response = await fetch('http://127.0.0.1:8000/train-models', {
+      const response = await fetch(`${API_URL}/train-models`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -165,7 +166,7 @@ export default function Dashboard() {
     
     pollingRef.current = setInterval(async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/results/${jobId}`);
+        const response = await fetch(`${API_URL}/results/${jobId}`);
         if (!response.ok) throw new Error('Polling update failed.');
         
         const data = await response.json();

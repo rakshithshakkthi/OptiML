@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Table, Eye, Search, Settings } from 'lucide-react';
+import { API_URL } from '../config';
 
 export default function DataPreview({ uploadInfo, onAnalyzeComplete }) {
   const [targetColumn, setTargetColumn] = useState(uploadInfo.default_target || uploadInfo.columns[uploadInfo.columns.length - 1] || '');
@@ -13,7 +14,7 @@ export default function DataPreview({ uploadInfo, onAnalyzeComplete }) {
     setError('');
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/analyze', {
+      const response = await fetch(`${API_URL}/analyze`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
