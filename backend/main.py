@@ -364,6 +364,19 @@ async def get_system_stats_endpoint():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch system stats: {str(e)}")
 
+@app.get("/")
+async def root():
+    """
+    Friendly root endpoint explaining that this is the backend API.
+    """
+    return {
+        "status": "healthy",
+        "message": "Welcome to the OptiML Backend API! The service is online and healthy.",
+        "docs": "/docs",
+        "health": "/health",
+        "info": "This is the backend API. If you are looking for the OptiML user interface, please open your Vercel frontend URL or run the Next.js frontend locally."
+    }
+
 @app.get("/health")
 async def health_check():
     """
