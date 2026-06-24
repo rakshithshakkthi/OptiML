@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MetaML | AutoML Studio Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=EB+Garamond:wght@400;500;600;700&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary": "#ffffff",
+                    "ink": "#000000",
+                    "surface-container": "#ffe9e3",
+                    "on-primary-fixed": "#390c00",
+                    "secondary-fixed-dim": "#cac6bc",
+                    "inverse-primary": "#ffb59c",
+                    "sunshine-300": "#FFD580",
+                    "surface-variant": "#f9dcd4",
+                    "on-surface": "#271813",
+                    "on-secondary-fixed": "#1c1c15",
+                    "steel": "#888888",
+                    "secondary": "#605e56",
+                    "cream-soft": "#FAF7F0",
+                    "surface-container-low": "#fff1ed",
+                    "mistral-orange": "#FF5F1F",
+                    "on-tertiary-container": "#00304a",
+                    "sunshine-500": "#FFB347",
+                    "primary": "#ab3600",
+                    "on-primary-fixed-variant": "#832700",
+                    "orange-deep": "#E04E10",
+                    "surface": "#fff8f6",
+                    "secondary-fixed": "#e6e2d7",
+                    "outline": "#8f7066",
+                    "tertiary-fixed-dim": "#8dcdff",
+                    "tertiary-container": "#009de4",
+                    "surface-code": "#1A1A1A",
+                    "yellow-saturated": "#FFD700",
+                    "background": "#fff8f6",
+                    "surface-container-highest": "#f9dcd4",
+                    "tertiary": "#006493",
+                    "canvas": "#FFFFFF",
+                    "primary-fixed-dim": "#ffb59c",
+                    "on-error": "#ffffff",
+                    "cream-deeper": "#EFEAD8",
+                    "primary-fixed": "#ffdbcf",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#561700",
+                    "on-background": "#271813",
+                    "hairline": "#E5E5E5",
+                    "on-tertiary-fixed-variant": "#004b70",
+                    "inverse-surface": "#3d2c27",
+                    "ink-tint": "#1A1A1A",
+                    "sunshine-900": "#CC5500",
+                    "tertiary-fixed": "#cae6ff",
+                    "surface-dim": "#f0d4cc",
+                    "outline-variant": "#e3bfb3",
+                    "on-secondary-fixed-variant": "#48473f",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#5b4138",
+                    "on-error-container": "#93000a",
+                    "secondary-container": "#e6e2d7",
+                    "primary-container": "#ff5f1f",
+                    "surface-tint": "#ab3600",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#fff8f6",
+                    "error": "#ba1a1a",
+                    "cream": "#F5F1E6",
+                    "beige-deep": "#E5E0D0",
+                    "slate": "#666666",
+                    "on-secondary-container": "#66645c",
+                    "surface-container-high": "#ffe2d9",
+                    "sunshine-800": "#E67300",
+                    "on-tertiary-fixed": "#001e30",
+                    "inverse-on-surface": "#ffede8",
+                    "sunshine-700": "#FF8C00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "12px",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "section": "64px",
+                    "xxs": "4px",
+                    "section-lg": "96px",
+                    "xxl": "32px",
+                    "sm": "12px",
+                    "lg": "20px",
+                    "hero": "120px",
+                    "md": "16px",
+                    "xl": "24px",
+                    "xs": "8px",
+                    "xxxl": "40px",
+                    "section-sm": "48px"
+            },
+            "fontFamily": {
+                    "caption-bold": ["Inter"],
+                    "heading-1": ["EB Garamond"],
+                    "heading-3": ["Inter"],
+                    "heading-2": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-sm-medium": ["Inter"],
+                    "display-lg": ["EB Garamond"],
+                    "micro-uppercase": ["Inter"],
+                    "code-md": ["jetbrainsMono"],
+                    "hero-display": ["EB Garamond"]
+            },
+            "fontSize": {
+                    "caption-bold": ["13px", {"lineHeight": "1.40", "letterSpacing": "0", "fontWeight": "600"}],
+                    "heading-1": ["52px", {"lineHeight": "1.15", "letterSpacing": "-0.5px", "fontWeight": "400"}],
+                    "heading-3": ["28px", {"lineHeight": "1.25", "letterSpacing": "0", "fontWeight": "500"}],
+                    "heading-2": ["36px", {"lineHeight": "1.20", "letterSpacing": "-0.5px", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "1.55", "letterSpacing": "0", "fontWeight": "400"}],
+                    "body-sm-medium": ["14px", {"lineHeight": "1.50", "letterSpacing": "0", "fontWeight": "500"}],
+                    "display-lg": ["64px", {"lineHeight": "1.10", "letterSpacing": "-1px", "fontWeight": "400"}],
+                    "micro-uppercase": ["11px", {"lineHeight": "1.40", "letterSpacing": "1px", "fontWeight": "600"}],
+                    "code-md": ["14px", {"lineHeight": "1.50", "letterSpacing": "0", "fontWeight": "400"}],
+                    "hero-display": ["84px", {"lineHeight": "1.05", "letterSpacing": "-1.5px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .sunset-stripe {
+            height: 4px;
+            background: linear-gradient(to right, #FF5F1F, #FF8C00, #FFB347, #FFD700, #F5F1E6);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #E5E0D0;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-canvas font-body-md text-ink antialiased overflow-x-hidden">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-cream border-r border-hairline flex flex-col p-md space-y-xs z-50">
+<div class="mb-xxl px-xs">
+<h1 class="font-heading-3 text-heading-3 text-ink">AutoML Studio</h1>
+<p class="font-body-sm-medium text-secondary">Enterprise Tier</p>
+</div>
+<nav class="flex-1 space-y-xs">
+<!-- Active Tab: Overview -->
+<a class="flex items-center gap-sm px-md py-sm bg-primary text-on-primary rounded-lg font-bold transition-transform scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-sm-medium">Overview</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm text-secondary hover:bg-cream-deeper rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary" data-icon="database">database</span>
+<span class="font-body-sm-medium">Datasets</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm text-secondary hover:bg-cream-deeper rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary" data-icon="model_training">model_training</span>
+<span class="font-body-sm-medium">Training</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm text-secondary hover:bg-cream-deeper rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary" data-icon="swords">swords</span>
+<span class="font-body-sm-medium">Battle Arena</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm text-secondary hover:bg-cream-deeper rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary" data-icon="leaderboard">leaderboard</span>
+<span class="font-body-sm-medium">Leaderboards</span>
+</a>
+</nav>
+<div class="pt-md border-t border-hairline">
+<button class="w-full bg-ink text-on-primary font-body-sm-medium py-sm rounded-lg mb-md hover:opacity-90 transition-opacity">
+                New Experiment
+            </button>
+<div class="space-y-xs">
+<a class="flex items-center gap-sm px-md py-xs text-secondary hover:text-ink transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-sm-medium">Settings</span>
+</a>
+<a class="flex items-center gap-sm px-md py-xs text-secondary hover:text-ink transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-body-sm-medium">Support</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 min-h-screen flex flex-col relative">
+<!-- Breadcrumb Header -->
+<header class="w-full sticky top-0 bg-canvas/80 backdrop-blur-md z-40 px-xl py-md flex justify-between items-center border-b border-hairline">
+<div class="flex items-center gap-xs font-body-sm-medium">
+<span class="text-secondary">Dashboard</span>
+<span class="text-hairline">/</span>
+<span class="text-ink font-bold">Overview</span>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-secondary text-[20px]" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-xs bg-cream-soft border border-hairline rounded-lg text-body-sm-medium focus:ring-1 focus:ring-primary focus:border-primary outline-none w-64" placeholder="Search experiments..." type="text"/>
+</div>
+<div class="w-10 h-10 rounded-full bg-cream-deeper border border-hairline flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A clean, professional close-up portrait of a tech executive in a minimalist studio setting. The lighting is soft and warm, casting gentle shadows that emphasize a high-end editorial feel. The background is a solid cream color that matches a premium paper stock texture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxlfB4nSEKrE2hRxNCjX-LOSIIkYKZCZc3PH9xLcrkvRNmbEGUNuGHWRXm6JipdfPIVr5XQRhaL0o2nXL9tvgzuKfewn9GNWQhLsDepKmO-SKOK__UEqRFPMS80Sbhk6JQBrttjwtv6hsFShS2MdnZ5NtKGsB4qtT8v3kX-UUSOx_EJGTmtadpeQzezPsT_xjhA4w8aImVaBfIbfWb9TYsQ-K2fIhpl20L5LByOPFdz1hPFbPaqxRA14IeRQYVnM78qIGj_itD_A"/>
+</div>
+</div>
+</header>
+<div class="p-xl space-y-xl max-w-7xl">
+<!-- Top Section: High-level Metrics -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="bg-cream p-xl rounded-lg border border-beige-deep relative overflow-hidden group hover:border-mistral-orange/30 transition-colors">
+<p class="font-micro-uppercase uppercase text-secondary mb-xs">Total Datasets</p>
+<h2 class="font-display-lg text-display-lg text-ink leading-tight">12</h2>
+<div class="absolute right-[-10px] bottom-[-10px] opacity-10 rotate-12 transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-[80px]" data-icon="database">database</span>
+</div>
+</div>
+<div class="bg-cream p-xl rounded-lg border border-beige-deep relative overflow-hidden group hover:border-mistral-orange/30 transition-colors">
+<p class="font-micro-uppercase uppercase text-secondary mb-xs">Models Trained</p>
+<h2 class="font-display-lg text-display-lg text-ink leading-tight">148</h2>
+<div class="absolute right-[-10px] bottom-[-10px] opacity-10 rotate-12 transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-[80px]" data-icon="model_training">model_training</span>
+</div>
+</div>
+<div class="bg-cream p-xl rounded-lg border border-beige-deep relative overflow-hidden group hover:border-mistral-orange/30 transition-colors">
+<p class="font-micro-uppercase uppercase text-secondary mb-xs">Avg. Accuracy</p>
+<h2 class="font-display-lg text-display-lg text-ink leading-tight">94.2%</h2>
+<div class="absolute right-[-10px] bottom-[-10px] opacity-10 rotate-12 transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-[80px]" data-icon="analytics">analytics</span>
+</div>
+</div>
+</section>
+<!-- Middle Section: Battle Arena & Experiments -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-lg items-stretch">
+<!-- Model Battle Arena (2/3) -->
+<div class="lg:col-span-2 bg-canvas border border-hairline rounded-lg p-xl flex flex-col space-y-lg shadow-sm">
+<div class="flex justify-between items-center">
+<div>
+<h3 class="font-heading-2 text-heading-2 text-ink">Model Battle Arena</h3>
+<p class="font-body-sm-medium text-secondary">Head-to-head performance wins</p>
+</div>
+<button class="text-primary font-caption-bold flex items-center gap-xxs hover:underline">
+                            Enter Arena <span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Battle Arena Visualization Placeholder -->
+<div class="flex-1 grid grid-cols-1 gap-md">
+<div class="flex items-center gap-md bg-cream-soft p-md rounded-lg border border-hairline hover:bg-cream transition-colors cursor-pointer">
+<div class="flex-1">
+<div class="flex justify-between mb-xs">
+<span class="font-body-sm-medium font-bold">Random Forest</span>
+<span class="font-code-md text-mistral-orange font-bold">82 Wins</span>
+</div>
+<div class="w-full h-2 bg-hairline rounded-full overflow-hidden">
+<div class="bg-mistral-orange h-full w-[82%]"></div>
+</div>
+</div>
+<div class="text-secondary font-micro-uppercase">vs</div>
+<div class="flex-1 text-right">
+<div class="flex justify-between mb-xs">
+<span class="font-code-md text-ink font-bold">18 Wins</span>
+<span class="font-body-sm-medium font-bold">Decision Tree</span>
+</div>
+<div class="w-full h-2 bg-hairline rounded-full overflow-hidden">
+<div class="bg-ink h-full w-[18%] float-right"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-md bg-cream-soft p-md rounded-lg border border-hairline hover:bg-cream transition-colors cursor-pointer">
+<div class="flex-1">
+<div class="flex justify-between mb-xs">
+<span class="font-body-sm-medium font-bold">XGBoost v4</span>
+<span class="font-code-md text-mistral-orange font-bold">56 Wins</span>
+</div>
+<div class="w-full h-2 bg-hairline rounded-full overflow-hidden">
+<div class="bg-mistral-orange h-full w-[56%]"></div>
+</div>
+</div>
+<div class="text-secondary font-micro-uppercase">vs</div>
+<div class="flex-1 text-right">
+<div class="flex justify-between mb-xs">
+<span class="font-code-md text-ink font-bold">44 Wins</span>
+<span class="font-body-sm-medium font-bold">LightGBM</span>
+</div>
+<div class="w-full h-2 bg-hairline rounded-full overflow-hidden">
+<div class="bg-ink h-full w-[44%] float-right"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-md bg-cream-soft p-md rounded-lg border border-hairline hover:bg-cream transition-colors cursor-pointer">
+<div class="flex-1">
+<div class="flex justify-between mb-xs">
+<span class="font-body-sm-medium font-bold">DeepML v1</span>
+<span class="font-code-md text-mistral-orange font-bold">91 Wins</span>
+</div>
+<div class="w-full h-2 bg-hairline rounded-full overflow-hidden">
+<div class="bg-mistral-orange h-full w-[91%]"></div>
+</div>
+</div>
+<div class="text-secondary font-micro-uppercase">vs</div>
+<div class="flex-1 text-right">
+<div class="flex justify-between mb-xs">
+<span class="font-code-md text-ink font-bold">9 Wins</span>
+<span class="font-body-sm-medium font-bold">Logistic Reg</span>
+</div>
+<div class="w-full h-2 bg-hairline rounded-full overflow-hidden">
+<div class="bg-ink h-full w-[9%] float-right"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Active Experiments (1/3) -->
+<div class="bg-cream border border-beige-deep rounded-lg p-xl flex flex-col space-y-lg">
+<h3 class="font-heading-3 text-heading-3 text-ink">Active Experiments</h3>
+<div class="space-y-md custom-scrollbar overflow-y-auto max-h-[320px] pr-xs">
+<!-- Exp 1 -->
+<div class="bg-canvas border border-hairline p-md rounded-lg space-y-xs">
+<div class="flex justify-between items-start">
+<span class="font-body-sm-medium font-bold">NeuroSearch_Alpha</span>
+<span class="px-xs py-[2px] bg-sunshine-300/30 text-sunshine-900 text-[10px] font-bold rounded uppercase">Training</span>
+</div>
+<div class="w-full h-1 bg-hairline rounded-full overflow-hidden">
+<div class="bg-mistral-orange h-full w-[65%] animate-pulse"></div>
+</div>
+<p class="text-[11px] text-secondary">65% • Est. 12 mins left</p>
+</div>
+<!-- Exp 2 -->
+<div class="bg-canvas border border-hairline p-md rounded-lg space-y-xs">
+<div class="flex justify-between items-start">
+<span class="font-body-sm-medium font-bold">Financial_Forecaster_X</span>
+<span class="px-xs py-[2px] bg-sunshine-300/30 text-sunshine-900 text-[10px] font-bold rounded uppercase">Tuning</span>
+</div>
+<div class="w-full h-1 bg-hairline rounded-full overflow-hidden">
+<div class="bg-mistral-orange h-full w-[22%]"></div>
+</div>
+<p class="text-[11px] text-secondary">22% • Hyperparameter search</p>
+</div>
+<!-- Exp 3 -->
+<div class="bg-canvas border border-hairline p-md rounded-lg space-y-xs">
+<div class="flex justify-between items-start">
+<span class="font-body-sm-medium font-bold">Customer_Churn_LGBM</span>
+<span class="px-xs py-[2px] bg-sunshine-300/30 text-sunshine-900 text-[10px] font-bold rounded uppercase">Ensembling</span>
+</div>
+<div class="w-full h-1 bg-hairline rounded-full overflow-hidden">
+<div class="bg-mistral-orange h-full w-[89%]"></div>
+</div>
+<p class="text-[11px] text-secondary">89% • Finalizing weights</p>
+</div>
+</div>
+<button class="w-full border border-hairline py-sm rounded-lg font-caption-bold text-secondary hover:bg-beige-deep transition-colors">
+                        View All Experiments
+                    </button>
+</div>
+</section>
+<!-- Bottom Section: Performance Leaderboard -->
+<section class="bg-canvas border border-hairline rounded-lg overflow-hidden shadow-sm">
+<div class="px-xl py-lg border-b border-hairline bg-cream-soft flex justify-between items-center">
+<h3 class="font-heading-2 text-heading-2 text-ink">Performance Leaderboard</h3>
+<div class="flex gap-xs">
+<span class="material-symbols-outlined p-xs hover:bg-cream cursor-pointer rounded" data-icon="filter_list">filter_list</span>
+<span class="material-symbols-outlined p-xs hover:bg-cream cursor-pointer rounded" data-icon="download">download</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-cream-soft text-secondary font-micro-uppercase text-xs tracking-wider">
+<th class="px-xl py-md border-b border-hairline">Model Name</th>
+<th class="px-xl py-md border-b border-hairline">Dataset</th>
+<th class="px-xl py-md border-b border-hairline text-center">Meta-Features</th>
+<th class="px-xl py-md border-b border-hairline text-right">Top Accuracy</th>
+<th class="px-xl py-md border-b border-hairline w-10"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-hairline">
+<tr class="hover:bg-cream-soft transition-colors cursor-pointer group">
+<td class="px-xl py-md font-body-sm-medium font-bold text-ink">DeepML_Classifier_Pro</td>
+<td class="px-xl py-md text-secondary">Imagenet_Restructured_v2</td>
+<td class="px-xl py-md text-center font-code-md">1,420</td>
+<td class="px-xl py-md text-right font-bold text-primary">98.42%</td>
+<td class="px-xl py-md text-secondary"><span class="material-symbols-outlined text-[18px] opacity-0 group-hover:opacity-100 transition-opacity" data-icon="more_vert">more_vert</span></td>
+</tr>
+<tr class="hover:bg-cream-soft transition-colors cursor-pointer group">
+<td class="px-xl py-md font-body-sm-medium font-bold text-ink">XGBoost_Optimized_Retail</td>
+<td class="px-xl py-md text-secondary">Sales_Forecasting_Q4</td>
+<td class="px-xl py-md text-center font-code-md">84</td>
+<td class="px-xl py-md text-right font-bold text-primary">96.15%</td>
+<td class="px-xl py-md text-secondary"><span class="material-symbols-outlined text-[18px] opacity-0 group-hover:opacity-100 transition-opacity" data-icon="more_vert">more_vert</span></td>
+</tr>
+<tr class="hover:bg-cream-soft transition-colors cursor-pointer group">
+<td class="px-xl py-md font-body-sm-medium font-bold text-ink">RandomForest_Fraud_v3</td>
+<td class="px-xl py-md text-secondary">Transaction_Anomaly_Set</td>
+<td class="px-xl py-md text-center font-code-md">312</td>
+<td class="px-xl py-md text-right font-bold text-primary">95.88%</td>
+<td class="px-xl py-md text-secondary"><span class="material-symbols-outlined text-[18px] opacity-0 group-hover:opacity-100 transition-opacity" data-icon="more_vert">more_vert</span></td>
+</tr>
+<tr class="hover:bg-cream-soft transition-colors cursor-pointer group">
+<td class="px-xl py-md font-body-sm-medium font-bold text-ink">MetaLLM_Distilled_Tiny</td>
+<td class="px-xl py-md text-secondary">NLP_Sentiment_Master</td>
+<td class="px-xl py-md text-center font-code-md">51,000</td>
+<td class="px-xl py-md text-right font-bold text-primary">94.10%</td>
+<td class="px-xl py-md text-secondary"><span class="material-symbols-outlined text-[18px] opacity-0 group-hover:opacity-100 transition-opacity" data-icon="more_vert">more_vert</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- Space for Footer Push -->
+<div class="mt-auto">
+<!-- Signature Element: Sunset Stripe -->
+<div class="sunset-stripe w-full"></div>
+<!-- Footer -->
+<footer class="w-full bg-canvas py-xxl px-xl flex flex-col items-center space-y-md">
+<div class="font-heading-2 text-heading-2 text-ink">MetaML</div>
+<div class="flex flex-wrap justify-center gap-xl">
+<a class="font-caption-bold text-secondary hover:text-mistral-orange transition-colors" href="#">Privacy Policy</a>
+<a class="font-caption-bold text-secondary hover:text-mistral-orange transition-colors" href="#">Terms of Service</a>
+<a class="font-caption-bold text-secondary hover:text-mistral-orange transition-colors" href="#">API Documentation</a>
+<a class="font-caption-bold text-secondary hover:text-mistral-orange transition-colors" href="#">System Status</a>
+</div>
+<p class="font-caption-bold text-secondary opacity-60">© 2024 MetaML Systems. Built for the frontier.</p>
+</footer>
+</div>
+</main>
+<!-- Micro-interaction Scripts -->
+<script>
+        // Simple scale effect for dashboard cards on hover
+        document.querySelectorAll('section > div').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                if(!card.classList.contains('lg:col-span-2')) {
+                   // Optional hover logic
+                }
+            });
+        });
+
+        // Search bar focus effect
+        const searchInput = document.querySelector('input[placeholder="Search experiments..."]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('ring-2', 'ring-primary/20');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('ring-2', 'ring-primary/20');
+        });
+    </script>
+</body></html>
