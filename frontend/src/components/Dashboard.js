@@ -80,9 +80,9 @@ export default function Dashboard() {
   const checkBackendHealth = async () => {
     setBackendHealth('CHECKING');
     try {
-      const res = await fetch(`${API_URL}/results/ping-health-check`).catch(() => null);
-      // If the server responds (even with 404 since ping-health-check is not an endpoint), it means it's ONLINE
-      if (res && (res.status === 200 || res.status === 404)) {
+      const res = await fetch(`${API_URL}/health`).catch(() => null);
+      // If the server responds successfully to our dedicated health check, it's ONLINE
+      if (res && res.status === 200) {
         setBackendHealth('ONLINE');
       } else {
         setBackendHealth('OFFLINE');

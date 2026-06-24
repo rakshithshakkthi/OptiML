@@ -26,6 +26,11 @@ app = FastAPI(title="OptiML API", version="1.0.0")
 allowed_origins_str = os.getenv("ALLOWED_ORIGINS")
 if allowed_origins_str:
     allowed_origins = [origin.strip() for origin in allowed_origins_str.split(",") if origin.strip()]
+    # Always allow local development origins to ensure seamless local client testing
+    local_origins = ["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:3001", "http://127.0.0.1:3001"]
+    for lo in local_origins:
+        if lo not in allowed_origins:
+            allowed_origins.append(lo)
 else:
     allowed_origins = ["*"]
 
