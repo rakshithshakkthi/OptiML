@@ -5,7 +5,7 @@ import {
   Upload, Search, Activity, ArrowRight, Play, 
   RefreshCw, Layers, Plus, Moon, Sun, ShieldAlert, CheckCircle2, 
   HelpCircle, Settings as SettingsIcon, Award, Cpu, Zap, Binary, 
-  AlertTriangle, ChevronLeft, ChevronRight, TrendingUp 
+  AlertTriangle, ChevronLeft, ChevronRight, TrendingUp, Database 
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
