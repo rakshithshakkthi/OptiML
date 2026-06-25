@@ -776,7 +776,7 @@ export default function Dashboard() {
                   </div>
 
                   {/* Dataset Characterization Box */}
-                  <div className="personality-box" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', margin: 0 }}>
+                  <div className="personality-box" style={{ display: 'flex', flexDirection: 'column', margin: 0, alignSelf: 'flex-start' }}>
                     <div className="personality-title" style={{ margin: '0 0 8px 0' }}>
                       <span>Dataset Characterization:</span>
                       <span className="personality-badge">
