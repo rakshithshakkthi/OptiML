@@ -5,7 +5,8 @@ import {
   Upload, Search, Activity, ArrowRight, Play, 
   RefreshCw, Layers, Plus, Moon, Sun, ShieldAlert, CheckCircle2, 
   HelpCircle, Settings as SettingsIcon, Award, Cpu, Zap, Binary, 
-  AlertTriangle, ChevronLeft, ChevronRight, TrendingUp, Database 
+  AlertTriangle, ChevronLeft, ChevronRight, TrendingUp, Database,
+  FileDown
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -704,6 +705,30 @@ export default function Dashboard() {
                           <span style={{ fontSize: '12px', color: 'var(--text-secondary)', backgroundColor: 'var(--bg-tertiary)', padding: '2px 8px', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
                             Fit Time: {jobProgress.model_details?.[jobProgress.best_model]?.train_time.toFixed(3) || '0.000'}s
                           </span>
+                          {/* 4. Model Download */}
+                          <button 
+                            onClick={() => window.open(`${API_URL}/results/${uploadInfo.job_id}/model`, '_blank')}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              padding: '4px 10px',
+                              fontSize: '11px',
+                              borderRadius: '6px',
+                              backgroundColor: 'var(--accent-color)',
+                              color: '#ffffff',
+                              border: 'none',
+                              cursor: 'pointer',
+                              fontWeight: '600',
+                              transition: 'opacity var(--transition-fast)'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
+                            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+                            title="Download trained model pipeline file (.pkl)"
+                          >
+                            <FileDown size={12} />
+                            Download Model
+                          </button>
                         </div>
                       </div>
                     </div>

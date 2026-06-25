@@ -181,12 +181,28 @@ export default function AiExplanation({ jobId, reportMarkdown }) {
             {copied ? 'Copied Markdown' : 'Copy Report'}
           </button>
           <button 
-            className="btn btn-primary" 
+            className="btn btn-secondary" 
             onClick={handleDownloadPdf}
             style={{ padding: '0.5rem 1rem', fontSize: '0.75rem', gap: '0.4rem', borderRadius: '8px' }}
           >
             <FileDown size={14} />
             Download PDF Report
+          </button>
+          <button 
+            className="btn btn-primary" 
+            onClick={() => window.open(`${API_URL}/results/${jobId}/model`, '_blank')}
+            style={{ 
+              padding: '0.5rem 1rem', 
+              fontSize: '0.75rem', 
+              gap: '0.4rem', 
+              borderRadius: '8px',
+              backgroundColor: 'var(--accent-color)',
+              color: '#ffffff',
+              border: 'none'
+            }}
+          >
+            <FileDown size={14} />
+            Download Trained Model
           </button>
         </div>
       </div>

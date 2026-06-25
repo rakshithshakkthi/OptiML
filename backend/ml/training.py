@@ -182,6 +182,7 @@ def train_all_models(job_id: str, df: pd.DataFrame, target_col: str, progress_ca
     results = {}
     best_overall_score = -1.0
     best_overall_model = None
+    best_overall_pipeline = None
     
     # Train each model
     for model_name, cfg in models_config.items():
@@ -195,7 +196,7 @@ def train_all_models(job_id: str, df: pd.DataFrame, target_col: str, progress_ca
         
         # Subsample for extremely slow models if dataset is large to prevent hanging
         X_train_model, y_train_model = X_train, y_train
-        if model_name in ["SVM", "KNN"] and len(X_train) > 10000:
+        if len(X_train) > 10000:
             try:
                 # Attempt stratified subsampling
                 X_train_model, _, y_train_model, _ = train_test_split(
@@ -329,6 +330,7 @@ def train_all_models(job_id: str, df: pd.DataFrame, target_col: str, progress_ca
         if accuracy > best_overall_score:
             best_overall_score = accuracy
             best_overall_model = model_name
+            best_overall_pipeline = best_pipeline
             
     log_progress("Cross-validation grid search completed. Starting feature attribution weights extraction...", 95)
     
@@ -360,5 +362,6 @@ def train_all_models(job_id: str, df: pd.DataFrame, target_col: str, progress_ca
         "feature_importances": feature_importance_list,
         "model_details": results,
         "best_model": best_overall_model,
-        "best_score": best_overall_score
+        "best_score": best_overall_score,
+        "best_pipeline": best_overall_pipeline
     }

@@ -68,6 +68,7 @@ def async_training_pipeline(job_id: str, target_column: str):
     """
     local_csv_path = os.path.join(UPLOAD_DIR, f"{job_id}.csv")
     local_pdf_path = os.path.join(PDF_DIR, f"report_{job_id}.pdf")
+    local_model_path = os.path.join(UPLOAD_DIR, f"model_{job_id}.pkl")
     
     try:
         # 1. Download CSV from Supabase Storage
@@ -105,6 +106,15 @@ def async_training_pipeline(job_id: str, target_column: str):
             progress_callback=progress_tracker
         )
         
+        # Serialize and upload trained best model
+        progress_tracker("Serializing optimal model pipeline configurations...", 85)
+        import pickle
+        with open(local_model_path, "wb") as f:
+            pickle.dump(training_results["best_pipeline"], f)
+            
+        progress_tracker("Uploading serialized model package to cloud storage...", 88)
+        storage.upload_file("reports", local_model_path, f"model_{job_id}.pkl", mime_type="application/octet-stream")
+        
         progress_tracker("Generating AI Research Report explaining pipeline convergence...", 90)
         ai_report = generate_report(meta_results, training_results)
         
@@ -131,7 +141,8 @@ def async_training_pipeline(job_id: str, target_column: str):
             "leaderboard": training_results["leaderboard"],
             "feature_importances": training_results["feature_importances"],
             "ai_report": ai_report,
-            "pdf_path": f"reports/report_{job_id}.pdf"
+            "pdf_path": f"reports/report_{job_id}.pdf",
+            "model_path": f"reports/model_{job_id}.pkl"
         }
         
         # Update database with final successful run
@@ -173,6 +184,11 @@ def async_training_pipeline(job_id: str, target_column: str):
                 os.remove(local_pdf_path)
             except Exception as clean_err:
                 print(f"Error removing temp PDF: {clean_err}")
+        if os.path.exists(local_model_path):
+            try:
+                os.remove(local_model_path)
+            except Exception as clean_err:
+                print(f"Error removing temp model: {clean_err}")
 
 @app.post("/upload-dataset")
 async def upload_dataset(file: UploadFile = File(...)):
@@ -360,6 +376,27 @@ async def get_pdf(job_id: str):
         )
     except Exception as e:
         raise HTTPException(status_code=404, detail="PDF report not found. Wait for training to complete.")
+
+@app.get("/results/{job_id}/model")
+async def get_model(job_id: str):
+    """
+    Serves the trained best model pickle file from Supabase Storage.
+    """
+    try:
+        model_bytes = storage.get_file_bytes("reports", f"model_{job_id}.pkl")
+        job = database.get_job(job_id)
+        best_model_name = "model"
+        if job and job.get("best_model"):
+            best_model_name = job["best_model"].replace(" ", "_").lower()
+        return Response(
+            content=model_bytes,
+            media_type="application/octet-stream",
+            headers={
+                "Content-Disposition": f"attachment; filename=optiml_{best_model_name}_{job_id}.pkl"
+            }
+        )
+    except Exception as e:
+        raise HTTPException(status_code=404, detail="Model file not found. Wait for training to complete.")
 
 @app.get("/system-stats")
 async def get_system_stats_endpoint():
