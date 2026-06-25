@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  Upload, Search, Swords, Trophy, Activity, ArrowRight, Play, 
+  Upload, Search, Activity, ArrowRight, Play, 
   RefreshCw, Layers, Plus, Moon, Sun, ShieldAlert, CheckCircle2, 
   HelpCircle, Settings as SettingsIcon, Award, Cpu, Zap, Binary, 
-  AlertTriangle, ChevronLeft, ChevronRight 
+  AlertTriangle, ChevronLeft, ChevronRight, TrendingUp 
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -337,7 +337,7 @@ export default function Dashboard() {
             }}
             title={sidebarCollapsed ? "Model Training" : ""}
           >
-            <Swords size={18} />
+            <Activity size={18} />
             {!sidebarCollapsed && <span>Model Training</span>}
           </div>
 
@@ -359,7 +359,7 @@ export default function Dashboard() {
             }}
             title={sidebarCollapsed ? "Performance & Reports" : ""}
           >
-            <Trophy size={18} />
+            <TrendingUp size={18} />
             {!sidebarCollapsed && <span>Performance & Reports</span>}
           </div>
         </nav>
@@ -584,7 +584,7 @@ export default function Dashboard() {
                   marginBottom: '20px',
                   color: 'var(--accent-color)'
                 }}>
-                  <Swords size={32} />
+                  <Activity size={32} />
                 </div>
                 <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', fontWeight: '400', margin: '0 0 8px 0', color: 'var(--text-primary)' }}>
                   Model Training Dashboard Locked
@@ -689,7 +689,7 @@ export default function Dashboard() {
                     {/* 1. Best Model & Evaluation Metrics */}
                     <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '12px', marginBottom: '16px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                        <Trophy size={18} style={{ color: 'var(--accent-color)' }} />
+                        <Award size={18} style={{ color: 'var(--accent-color)' }} />
                         <h4 style={{ margin: 0, fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Optimal Candidate Selection</h4>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
@@ -837,7 +837,7 @@ export default function Dashboard() {
                   marginBottom: '20px',
                   color: 'var(--accent-color)'
                 }}>
-                  <Trophy size={32} />
+                  <TrendingUp size={32} />
                 </div>
                 <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', fontWeight: '400', margin: '0 0 8px 0', color: 'var(--text-primary)' }}>
                   Performance Metrics Pending

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Award, BarChart4, Trophy, TrendingUp, Info } from 'lucide-react';
+import { Award, BarChart4, TrendingUp, Info } from 'lucide-react';
 import { 
   BarChart, 
   Bar, 
@@ -45,7 +45,7 @@ export default function Leaderboard({ leaderboard, featureImportances }) {
       <div className="panel" style={{ gridColumn: 'span 2', border: '1px solid var(--border-color)' }}>
         <div className="panel-title-row">
           <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: '400', margin: 0 }}>
-            <Trophy size={20} style={{ color: 'var(--accent-color)' }} />
+            <BarChart4 size={20} style={{ color: 'var(--accent-color)' }} />
             Performance Leaderboard & Evaluation Metrics
           </h3>
           <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { Swords, Play, CheckCircle, AlertTriangle, Shield, Award, Cpu, Zap, Eye, Binary } from 'lucide-react';
+import { Play, CheckCircle, AlertTriangle, Shield, Award, Cpu, Zap, Eye, Binary, Network } from 'lucide-react';
 
 export default function ModelBattle({ jobProgress }) {
   const logEndRef = useRef(null);
@@ -19,7 +19,7 @@ export default function ModelBattle({ jobProgress }) {
     { name: "Random Forest", icon: <Shield size={24} />, desc: "Ensemble bagging" },
     { name: "XGBoost", icon: <Zap size={24} />, desc: "Gradient boosting" },
     { name: "SVM", icon: <Cpu size={24} />, desc: "Optimal margin kernel" },
-    { name: "KNN", icon: <Swords size={24} />, desc: "Distance cluster density" }
+    { name: "KNN", icon: <Network size={24} />, desc: "Distance cluster density" }
   ];
 
   // Helper to determine status class
