@@ -81,15 +81,15 @@ export default function ModelBattle({ jobProgress }) {
         <div className="flex-between" style={{ marginBottom: '1.5rem' }}>
           <div>
             <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: '400', margin: 0 }}>
-              AutoML Model Battle Arena
+              Model Training Dashboard
             </h3>
             <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: '4px 0 0 0' }}>
-              Watching hyperparameter searches compile in parallel. Models compete to minimize validation loss boundaries.
+              Monitoring hyperparameter optimization and cross-validated training loops in real time.
             </p>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
             <span style={{ fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', color: 'var(--accent-color)', letterSpacing: '0.05em' }}>
-              Arena Progression
+              Training Progress
             </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '4px' }}>
               <div style={{
@@ -145,7 +145,7 @@ export default function ModelBattle({ jobProgress }) {
                     boxShadow: 'var(--shadow-sm)',
                     letterSpacing: '0.05em'
                   }}>
-                    <Award size={10} /> WINNER
+                    <Award size={10} /> OPTIMAL
                   </div>
                 )}
                 
@@ -197,7 +197,7 @@ export default function ModelBattle({ jobProgress }) {
         {/* Timeline Log Console */}
         <h4 style={{ marginTop: '1.75rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '14px', color: 'var(--text-primary)', fontWeight: '600' }}>
           <Eye size={14} style={{ color: 'var(--accent-color)' }} />
-          Live Run Consolidation Logs
+          Optimization & Training Execution Logs
         </h4>
         <div className="log-panel">
           {jobProgress.logs && jobProgress.logs.map((log, index) => (

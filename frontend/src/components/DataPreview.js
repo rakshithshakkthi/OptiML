@@ -47,10 +47,10 @@ export default function DataPreview({ uploadInfo, onAnalyzeComplete }) {
         <div className="panel-title-row" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start', marginBottom: '2rem' }}>
           <div>
             <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: '400', margin: '0 0 4px 0', color: 'var(--text-primary)' }}>
-              Dataset Structure: {uploadInfo.filename}
+              Dataset Schema & Preview: {uploadInfo.filename}
             </h3>
             <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-              Job ID: {uploadInfo.job_id}
+              Experiment ID: {uploadInfo.job_id}
             </span>
           </div>
           <button
@@ -60,7 +60,7 @@ export default function DataPreview({ uploadInfo, onAnalyzeComplete }) {
             style={{ padding: '12px 28px', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '14px', minHeight: '44px', width: '100%', maxWidth: '280px' }}
           >
             <Search size={16} />
-            {loading ? 'Analyzing...' : 'Analyze Dataset Properties'}
+            {loading ? 'Executing Profile...' : 'Execute Schema Profiling'}
           </button>
         </div>
 
@@ -77,7 +77,7 @@ export default function DataPreview({ uploadInfo, onAnalyzeComplete }) {
         }}>
           <div>
             <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', display: 'block', textTransform: 'uppercase', fontWeight: '600', letterSpacing: '0.05em' }}>
-              Features Identified
+              Feature Variables Count
             </span>
             <span style={{ fontSize: '1.75rem', fontWeight: '700', color: 'var(--text-primary)' }}>
               {featureColumns.length}
@@ -85,7 +85,7 @@ export default function DataPreview({ uploadInfo, onAnalyzeComplete }) {
           </div>
           <div>
             <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', display: 'block', textTransform: 'uppercase', fontWeight: '600', letterSpacing: '0.05em' }}>
-              Total Columns
+              Total Dimensions
             </span>
             <span style={{ fontSize: '1.75rem', fontWeight: '700', color: 'var(--text-primary)' }}>
               {uploadInfo.columns.length}
@@ -96,7 +96,7 @@ export default function DataPreview({ uploadInfo, onAnalyzeComplete }) {
               htmlFor="target-select"
               style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontWeight: '600', display: 'block', textTransform: 'uppercase', marginBottom: '0.25rem', letterSpacing: '0.05em' }}
             >
-              Select Target Column (Y Label)
+              Predictive Target Variable (Y)
             </label>
             <select
               id="target-select"

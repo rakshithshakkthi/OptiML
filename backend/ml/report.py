@@ -111,7 +111,7 @@ def generate_pdf_report(meta: dict, training: dict, output_path: str):
     story = []
     
     # 1. Header Page Section
-    story.append(Paragraph("OptiML Research Report", title_style))
+    story.append(Paragraph("OptiML Experiment Report", title_style))
     story.append(Paragraph(f"Automated Pipeline Optimization & Meta-Analysis: {meta['personality']['title']}", subtitle_style))
     story.append(Spacer(1, 0.1 * inch))
     
@@ -122,13 +122,13 @@ def generate_pdf_report(meta: dict, training: dict, output_path: str):
         f"and outlines findings from training multiple competitive machine learning architectures. "
         f"Using cross-validated grid search, the <b>{training['best_model']}</b> pipeline was selected as the optimal model, "
         f"achieving a final cross-validated test accuracy of <b>{training['best_score']*100:.2f}%</b>. "
-        f"The model details have been logged in the OptiML memory bank for future offline meta-learning advice."
+        f"The model details have been logged in the OptiML experiment registry for future offline similarity-based advice."
     )
     story.append(Paragraph(exec_summary, body_style))
     story.append(Spacer(1, 0.1 * inch))
     
     # 3. Dataset Taxonomy & Profile
-    story.append(Paragraph("2. Dataset Taxonomy & Characterization", h1_style))
+    story.append(Paragraph("2. Dataset Taxonomy & Profile", h1_style))
     story.append(Paragraph(f"The analysis parsed <b>{meta['num_rows']:,}</b> records containing <b>{meta['num_features']}</b> predictive features. The target column was set to <b>`{meta['target_column']}`</b>.", body_style))
     
     # Metadata Table
@@ -156,8 +156,8 @@ def generate_pdf_report(meta: dict, training: dict, output_path: str):
     story.append(meta_table)
     story.append(Spacer(1, 0.15 * inch))
     
-    # Dataset Personality Callout
-    story.append(Paragraph(f"<b>Dataset Personality Profile:</b><br/>{meta['personality']['summary']}", quote_style))
+    # Dataset Characterization Callout
+    story.append(Paragraph(f"<b>Dataset Characterization Profile:</b><br/>{meta['personality']['summary']}", quote_style))
     
     # Implications
     story.append(Paragraph("Modeling Implications:", h2_style))

@@ -145,58 +145,58 @@ def analyze_dataset(df: pd.DataFrame, target_column: str = None) -> dict:
 
 def generate_personality(rows, cols, missing, cat_ratio, skew, corr, complexity) -> dict:
     """
-    Creates a detailed, scientific personality profile of the dataset based on metrics.
+    Creates a detailed, scientific dataset characterization profile based on key statistical metrics.
     """
     title_terms = []
     
     # 1. Row/Col Ratio (Dimensionality)
     if cols > 100 and rows < 1000:
-        title_terms.append("High-Dimensional")
-        dim_desc = "high dimensional density where feature count dominates sample depth"
+        title_terms.append("High-Dimensional Feature Space")
+        dim_desc = "high-dimensional layout where the feature count exceeds sample depth (under-determined system)"
     elif rows > 10000 and cols < 10:
-        title_terms.append("Tall-Narrow")
-        dim_desc = "deep historical scale and low feature count"
+        title_terms.append("Low-Dimensional Deep Sample Set")
+        dim_desc = "deep sample sequence with low feature dimensionality"
     else:
-        title_terms.append("Balanced-Scale")
-        dim_desc = "balanced proportion of samples and variables"
+        title_terms.append("Balanced-Scale Feature Set")
+        dim_desc = "balanced sample-to-feature ratio layout"
         
     # 2. Skew / Complexity
     if skew > 1.5 or complexity > 0.6:
-        title_terms.append("highly nonlinear chaotic system")
-        comp_desc = "exhibits highly nonlinear structure and heavily skewed distributions, suggesting that linear models will suffer from heavy bias"
+        title_terms.append("Highly Non-Linear Feature Mapping")
+        comp_desc = "is highly non-linear, which suggests high model capacity (e.g. tree ensembles) is required to minimize bias"
     elif complexity < 0.25:
-        title_terms.append("near-linear separable space")
-        comp_desc = "resembles a clean, near-linear separable manifold requiring minimal complexity to fit"
+        title_terms.append("Linearly Separable Manifold")
+        comp_desc = "is approximately linearly separable, suggesting low-capacity linear estimators will perform optimally and generalize well"
     else:
-        title_terms.append("moderate stochastic system")
-        comp_desc = "displays moderate complexity with stable distribution shapes and regular boundaries"
+        title_terms.append("Moderate Non-Linear Covariance Space")
+        comp_desc = "presents moderate non-linear complexity with stable decision boundary bounds"
 
     # 3. Correlations
     if corr > 0.5:
-        title_terms.append("strong feature coupling")
-        corr_desc = "tight multi-collinear associations, where redundant information exists across dimensions"
+        title_terms.append("High Feature Collinearity")
+        corr_desc = "significant multicollinearity, indicating potential feature redundancies across dimensions"
     elif corr < 0.15 and cols > 5:
-        title_terms.append("orthogonal independent dimensions")
-        corr_desc = "high feature independence, with near-orthogonal dimensions and low informational redundancy"
+        title_terms.append("Independent Feature Topology")
+        corr_desc = "low feature cross-correlation, suggesting high dimensional independence and low informational redundancy"
     else:
-        title_terms.append("standard covariance bonds")
-        corr_desc = "nominal covariance links across features without excessive collinearity"
+        title_terms.append("Nominal Feature Covariance")
+        corr_desc = "standard feature-to-feature covariance without critical multicollinearity"
 
     # 4. Sparsity/Missingness
     if missing > 0.1:
-        title_terms.append("sparse incomplete lattice")
-        missing_desc = "high cellular missingness, creating a sparse, fragmented topological structure"
+        title_terms.append("Sparse Dataset Representation")
+        missing_desc = "significant missing value ratio (sparsity), requiring robust imputation"
     else:
-        title_terms.append("continuous dense matrix")
-        missing_desc = "highly continuous, fully-populated dense grid with zero or negligible missing entries"
+        title_terms.append("Dense Feature Representation")
+        missing_desc = "dense feature populate matrix with negligible missingness"
 
-    # Format the title
-    title = f"{title_terms[0]} {title_terms[1]} with {title_terms[2]} in a {title_terms[3]}".title()
+    # Format the title as a professional dashboard header
+    title = f"{title_terms[0]} | {title_terms[1]} | {title_terms[2]} | {title_terms[3]}"
     
     # Comprehensive paragraphs
     summary = (
-        f"This dataset behaves like a {title.lower()}. Internally, it is characterized by a {dim_desc}, "
-        f"paired with a {missing_desc}. The functional landscape {comp_desc}, backed by {corr_desc}."
+        f"Statistical profile indicates a {dim_desc} paired with a {missing_desc}. "
+        f"The feature space mapping {comp_desc}, and exhibits {corr_desc}."
     )
     
     implications = []

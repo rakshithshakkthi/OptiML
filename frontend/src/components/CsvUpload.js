@@ -124,10 +124,10 @@ export default function CsvUpload({ onUploadSuccess }) {
   return (
     <div className="panel" style={{ maxWidth: '600px', margin: '2rem auto', border: '1px solid var(--border-beige-deep)' }}>
       <h3 style={{ marginBottom: '1rem', textAlign: 'center', fontFamily: 'var(--font-display)', fontSize: '2.25rem', fontWeight: '400' }}>
-        Upload Your Dataset
+        Dataset Ingestion & Configuration
       </h3>
       <p style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-        Provide a CSV file for classification models. We will parse feature variables and guide your ML pipeline options.
+        Ingest structured tabular datasets to execute automated model search, parameter optimization, and feature attribution metrics.
       </p>
 
       <form onSubmit={handleSubmit} onDragEnter={handleDrag}>
@@ -189,7 +189,7 @@ export default function CsvUpload({ onUploadSuccess }) {
             disabled={!selectedFile || loading}
             style={{ width: '100%' }}
           >
-            {loading ? 'Uploading & Parsing...' : 'Initialize Analysis Pipeline'}
+            {loading ? 'Ingesting & Parsing...' : 'Initialize Schema Analysis'}
             <ArrowRight size={16} />
           </button>
           
@@ -205,7 +205,7 @@ export default function CsvUpload({ onUploadSuccess }) {
             style={{ width: '100%', gap: '0.5rem' }}
           >
             <Database size={16} style={{ color: 'var(--accent-color)' }} />
-            Load Synthetic Customer Churn Sample
+            Load Synthetic Customer Churn Dataset
           </button>
         </div>
       </form>

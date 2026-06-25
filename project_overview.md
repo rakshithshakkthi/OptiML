@@ -1,6 +1,6 @@
 # OptiML | Intelligent AutoML & Meta-Learning Platform
 
-OptiML is an enterprise-grade, full-stack AutoML and Meta-Learning platform designed to automate the machine learning lifecycle. It enables users to upload CSV datasets, automatically profiles dataset meta-features, queries a meta-learning engine for model recommendations, runs grid searches in parallel, visualizes training progression in a live Battle Arena, compiles leaderboards with feature importances, and exports publication-grade PDF reports.
+OptiML is an enterprise-grade, full-stack AutoML and Meta-Learning platform designed to automate the machine learning lifecycle. It enables users to upload CSV datasets, automatically profiles dataset meta-features, queries a meta-learning engine for model recommendations, runs grid searches in parallel, visualizes training progression in a live Model Training Dashboard, compiles performance leaderboards with feature importances, and exports publication-grade PDF reports.
 
 ---
 
@@ -15,9 +15,9 @@ OptiML is an enterprise-grade, full-stack AutoML and Meta-Learning platform desi
 - **Meta-Feature Extraction**: Computes dataset shape (rows/columns ratio), missing value ratios, skewness mean, feature correlation matrices, and categorical feature densities.
 - **KNN Meta-Learner**: Compares the dataset's meta-feature vector against historical dataset runs saved in the Postgres database using a K-Nearest Neighbors distance metric to identify similar data distributions.
 - **AutoML Recommendation Advisor**: Recommends the optimal preprocessing scaling strategies (StandardScaler, MinMaxScaler, RobustScaler), class imbalance handling, and model priorities (e.g., advising tree-based ensembles for high-dimensional skewness).
-- **Personality Classifier**: Dynamically tags the dataset with a distinct classification (e.g., *"Wide Sparse Dataset"*, *"Correlated Dense Grid"*) and assigns a corresponding personality character profile.
+- **Dataset Characterization**: Dynamically tags the dataset with a distinct classification (e.g., *"Wide Sparse Dataset"*, *"Correlated Dense Grid"*) and assigns a corresponding statistical character profile.
 
-### ⚔️ AutoML Model Battle Arena
+### ⚔️ Model Training Dashboard
 - **Asynchronous Training Worker**: Triggers non-blocking training jobs using FastAPI `BackgroundTasks` to avoid HTTP timeouts during long-running grid searches.
 - **Multi-Algorithm Grid Search**: Evaluates 5 machine learning models in parallel:
   - **Logistic Regression**: Linear boundary baseline.
@@ -29,9 +29,9 @@ OptiML is an enterprise-grade, full-stack AutoML and Meta-Learning platform desi
 - **Live Consolidation Console**: Streams real-time fitting logs, accuracy increments, and training pipeline steps directly to a terminal console component on the frontend.
 
 ### 🏆 Leaderboard & Attribution
-- **Sunset Leaderboard**: Ranks model evaluations, dynamically awarding the top-ranked model with a gold outline and a `BEST CHOICE` badge.
+- **Performance Leaderboard**: Ranks model evaluations, dynamically awarding the top-ranked model with a gold outline and an `OPTIMAL PIPELINE` badge.
 - **Feature Attribution Charting**: Compares and renders feature importances using dynamic gradient charts powered by Recharts.
-- **AI Convergence Explanations**: Generates a detailed natural language summary explaining hyperparameter convergence and model choices.
+- **Training Analysis Summary**: Generates a detailed natural language summary explaining hyperparameter convergence and model choices.
 
 ### 📑 Publication-Grade PDF Reports
 - **Dynamic ReportLab PDF Engine**: Generates a styled multi-page PDF document on completion of a training run.

@@ -29,8 +29,8 @@ def generate_report(meta_results: dict, training_results: dict) -> str:
     missing_status = f"{meta_results['missing_ratio']*100:.1f}% missingness"
     
     # Generate the text
-    report = f"""# OptiML Research Report: Pipeline Optimization & Meta-Analysis
-**System Personality Tag:** *{personality['title']}*
+    report = f"""# OptiML Experiment Report: Pipeline Optimization & Meta-Analysis
+**Dataset Characterization Tag:** *{personality['title']}*
 **Execution ID:** Pipeline Evaluation Run
 
 ---
@@ -42,7 +42,7 @@ Through automated preprocessing and grid-search cross-validation, the **{best_mo
 
 ---
 
-## 2. Dataset Taxonomy & Characterization
+## 2. Dataset Taxonomy & Profile
 The dataset contains **{meta_results['num_rows']:,}** samples and **{meta_results['num_features']}** features, with target variable **`{meta_results['target_column']}`**. 
 
 ### 2.1 Meta-Features Extract
@@ -52,7 +52,7 @@ The dataset contains **{meta_results['num_rows']:,}** samples and **{meta_result
 * **Pairwise Feature Correlation Mean:** {meta_results['correlation_mean']:.3f} ({corr_status})
 * **System Complexity Index:** {meta_results['complexity_score']:.3f}
 
-### 2.2 Dataset Personality Assessment
+### 2.2 Dataset Characterization & Profile Assessment
 > "{personality['summary']}"
 
 The implications of these characteristics on training are as follows:

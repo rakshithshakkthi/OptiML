@@ -150,7 +150,7 @@ export default function Dashboard() {
             if (data.current_log && data.current_log !== lastLogMessage) {
               finalLogs.push({ time: Date.now(), text: data.current_log });
             }
-            finalLogs.push({ time: Date.now(), text: 'All models optimized. AI explanations generated.' });
+            finalLogs.push({ time: Date.now(), text: 'All model pipelines optimized. Evaluation and experiment reports successfully compiled.' });
             return {
               ...prev,
               status: 'COMPLETED',
@@ -165,6 +165,14 @@ export default function Dashboard() {
               best_score: data.best_score
             };
           });
+          
+          if (data.meta_features) {
+            setAnalysisInfo({
+              meta_features: data.meta_features,
+              meta_learning_advice: data.meta_learning_advice,
+              personality: data.personality
+            });
+          }
           
           triggerConfetti();
           
@@ -226,8 +234,8 @@ export default function Dashboard() {
     switch (activeTab) {
       case 'UPLOAD': return 'Upload Dataset';
       case 'PREVIEW': return 'Structure & Target';
-      case 'BATTLE': return 'Model Battle Arena';
-      case 'RESULTS': return 'Leaderboards & Reports';
+      case 'BATTLE': return 'Model Training Dashboard';
+      case 'RESULTS': return 'Performance & Reports';
       default: return 'Upload Dataset';
     }
   };
@@ -314,7 +322,7 @@ export default function Dashboard() {
           <div 
             onClick={() => {
               if (!uploadInfo) {
-                setModalMessage("To access the Model Battle Arena, you need to upload a dataset and run the initial profiling first.");
+                setModalMessage("To access the Model Training Dashboard, you must upload a dataset and execute schema profiling first.");
                 setShowNoDatasetModal(true);
               } else {
                 setActiveTab('BATTLE');
@@ -327,16 +335,16 @@ export default function Dashboard() {
               width: sidebarCollapsed ? '42px' : '100%',
               borderRadius: '8px'
             }}
-            title={sidebarCollapsed ? "Battle Arena" : ""}
+            title={sidebarCollapsed ? "Model Training" : ""}
           >
             <Swords size={18} />
-            {!sidebarCollapsed && <span>Battle Arena</span>}
+            {!sidebarCollapsed && <span>Model Training</span>}
           </div>
 
           <div 
             onClick={() => {
               if (jobProgress.status !== 'COMPLETED') {
-                setModalMessage("The Leaderboards and AI Research Reports will be available once the AutoML training pipeline completes.");
+                setModalMessage("Performance metrics and experiment reports will compile automatically once model optimization runs finish.");
                 setShowNoDatasetModal(true);
               } else {
                 setActiveTab('RESULTS');
@@ -349,10 +357,10 @@ export default function Dashboard() {
               width: sidebarCollapsed ? '42px' : '100%',
               borderRadius: '8px'
             }}
-            title={sidebarCollapsed ? "Leaderboards" : ""}
+            title={sidebarCollapsed ? "Performance & Reports" : ""}
           >
             <Trophy size={18} />
-            {!sidebarCollapsed && <span>Leaderboards</span>}
+            {!sidebarCollapsed && <span>Performance & Reports</span>}
           </div>
         </nav>
 
@@ -579,10 +587,10 @@ export default function Dashboard() {
                   <Swords size={32} />
                 </div>
                 <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', fontWeight: '400', margin: '0 0 8px 0', color: 'var(--text-primary)' }}>
-                  Battle Arena Locked
+                  Model Training Dashboard Locked
                 </h3>
                 <p style={{ fontSize: '14px', color: 'var(--text-secondary)', maxWidth: '400px', margin: '0 auto 24px auto', lineHeight: '1.5' }}>
-                  The AutoML Model Battle Arena is not active because there is no dataset uploaded. Please upload a CSV dataset to profile features and start model training.
+                  The model optimization and training logs are currently inactive. Ingest a CSV dataset to initialize validation splits and start the optimization run.
                 </p>
                 <button className="btn btn-primary" onClick={() => setActiveTab('UPLOAD')} style={{ backgroundColor: 'var(--text-primary)', color: 'var(--bg-secondary)', border: 'none', padding: '12px 24px', borderRadius: '8px', cursor: 'pointer' }}>
                   Upload a Dataset
@@ -596,49 +604,181 @@ export default function Dashboard() {
             jobProgress.status === 'COMPLETED' ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                 
+                {/* Dataset Profile Metrics Panel */}
+                <div className="panel" style={{ border: '1px solid var(--border-color)', marginBottom: '0px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                    <Database size={20} style={{ color: 'var(--accent-color)' }} />
+                    <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '1.75rem', fontWeight: '400' }}>
+                      Dataset Characterization & Schema Profiling
+                    </h3>
+                  </div>
+                  
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
+                    {/* Rows */}
+                    <div style={{ backgroundColor: 'var(--bg-tertiary)', padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', textTransform: 'uppercase', fontWeight: '600', letterSpacing: '0.05em' }}>
+                        Row Count (Sample Depth)
+                      </span>
+                      <strong style={{ fontSize: '20px', color: 'var(--text-primary)' }}>
+                        {analysisInfo?.meta_features?.num_rows?.toLocaleString() || '0'}
+                      </strong>
+                    </div>
+
+                    {/* Columns */}
+                    <div style={{ backgroundColor: 'var(--bg-tertiary)', padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', textTransform: 'uppercase', fontWeight: '600', letterSpacing: '0.05em' }}>
+                        Column Count (Feature Dimensionality)
+                      </span>
+                      <strong style={{ fontSize: '20px', color: 'var(--text-primary)' }}>
+                        {analysisInfo?.meta_features?.num_cols || '0'}
+                      </strong>
+                    </div>
+
+                    {/* Missing Values */}
+                    <div style={{ backgroundColor: 'var(--bg-tertiary)', padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', textTransform: 'uppercase', fontWeight: '600', letterSpacing: '0.05em' }}>
+                        Missing Value Ratio
+                      </span>
+                      <strong style={{ fontSize: '20px', color: 'var(--text-primary)' }}>
+                        {((analysisInfo?.meta_features?.missing_ratio || 0) * 100).toFixed(2)}%
+                      </strong>
+                    </div>
+
+                    {/* Feature Types */}
+                    <div style={{ backgroundColor: 'var(--bg-tertiary)', padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', textTransform: 'uppercase', fontWeight: '600', letterSpacing: '0.05em' }}>
+                        Feature Type Distribution
+                      </span>
+                      <div style={{ fontSize: '12px', marginTop: '4px', color: 'var(--text-primary)', fontWeight: '600' }}>
+                        {analysisInfo?.meta_features?.num_features || 0} features 
+                        <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', fontWeight: 'normal' }}>
+                          ({analysisInfo?.meta_features?.numeric_cols?.length || 0} numeric, {analysisInfo?.meta_features?.categorical_cols?.length || 0} categorical)
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Target Stats */}
+                    <div style={{ backgroundColor: 'var(--bg-tertiary)', padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', textTransform: 'uppercase', fontWeight: '600', letterSpacing: '0.05em' }}>
+                        Predictive Target (Y)
+                      </span>
+                      <strong style={{ fontSize: '14px', color: 'var(--accent-color)', display: 'block', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                        `{analysisInfo?.meta_features?.target_stats?.name || 'target'}`
+                      </strong>
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block' }}>
+                        Balance: {analysisInfo?.meta_features?.target_stats?.class_balance || 'Balanced'}
+                      </span>
+                    </div>
+
+                    {/* Correlation characteristics */}
+                    <div style={{ backgroundColor: 'var(--bg-tertiary)', padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', textTransform: 'uppercase', fontWeight: '600', letterSpacing: '0.05em' }}>
+                        Feature Correlation Mean
+                      </span>
+                      <strong style={{ fontSize: '20px', color: 'var(--text-primary)' }}>
+                        {analysisInfo?.meta_features?.correlation_mean?.toFixed(4) || '0.0000'}
+                      </strong>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Analysis Info and Advisor Card */}
                 <div className="grid-2">
                   {/* Advisor Card */}
                   <div className="panel" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                      <Layers size={20} style={{ color: 'var(--accent-color)' }} />
-                      <h4 style={{ margin: 0 }}>Meta-Learning Engine Recommendation</h4>
+                    {/* 1. Best Model & Evaluation Metrics */}
+                    <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '12px', marginBottom: '16px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                        <Trophy size={18} style={{ color: 'var(--accent-color)' }} />
+                        <h4 style={{ margin: 0, fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Optimal Candidate Selection</h4>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                        <span style={{ fontSize: '20px', fontWeight: '700', color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
+                          {jobProgress.best_model}
+                        </span>
+                        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                          <span style={{ fontSize: '14px', color: 'var(--accent-color)', fontWeight: '700' }}>
+                            Validation Accuracy: {(jobProgress.best_score * 100).toFixed(2)}%
+                          </span>
+                          {/* 3. Training Duration */}
+                          <span style={{ fontSize: '12px', color: 'var(--text-secondary)', backgroundColor: 'var(--bg-tertiary)', padding: '2px 8px', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
+                            Fit Time: {jobProgress.model_details?.[jobProgress.best_model]?.train_time.toFixed(3) || '0.000'}s
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <p style={{ fontSize: '14px', marginBottom: '16px' }}>
-                      Based on historical dataset profiles in SQLite database, our recommender advisor predicted:
+                    
+                    {/* 2. Algorithmic Feasibility Recommendation */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                      <Layers size={16} style={{ color: 'var(--accent-color)' }} />
+                      <h4 style={{ margin: 0, fontSize: '13px', fontWeight: '600' }}>Algorithmic Feasibility Recommendation</h4>
+                    </div>
+                    <p style={{ fontSize: '12.5px', marginBottom: '12px', color: 'var(--text-secondary)' }}>
+                      Based on metadata similarity computed against historical profiling metrics, the recommendation platform selected:
                     </p>
                     
                     <div style={{
-                      padding: '16px',
+                      padding: '14px',
                       backgroundColor: 'var(--bg-cream-soft)',
                       borderRadius: '8px',
                       borderLeft: '4px solid var(--accent-color)',
-                      marginBottom: '16px',
                       border: '1px solid var(--border-color)',
                       borderLeftWidth: '4px'
                     }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
-                        <strong style={{ fontSize: '18px', color: 'var(--text-primary)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '6px' }}>
+                        <strong style={{ fontSize: '16px', color: 'var(--text-primary)' }}>
                           {analysisInfo?.meta_learning_advice.best_model}
                         </strong>
-                        <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                        <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
                           Confidence: {(analysisInfo?.meta_learning_advice.confidence_score * 100).toFixed(0)}%
                         </span>
                       </div>
-                      <p style={{ fontSize: '13px', margin: 0, color: 'var(--text-secondary)' }}>
+                      <p style={{ fontSize: '12.5px', margin: '0 0 10px 0', color: 'var(--text-secondary)', fontStyle: 'italic', lineHeight: '1.4' }}>
                         {analysisInfo?.meta_learning_advice.justification}
                       </p>
-                    </div>
-
-                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                      <strong>Actual Winner: </strong> {jobProgress.best_model} (Accuracy: {(jobProgress.best_score * 100).toFixed(2)}%)
+                      
+                      {analysisInfo?.meta_learning_advice.why_recommended && (
+                        <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '10px', marginTop: '10px' }}>
+                          <div style={{ fontSize: '12px', marginBottom: '6px', color: 'var(--text-primary)' }}>
+                            <strong>Feasibility Justification:</strong> {analysisInfo.meta_learning_advice.why_recommended}
+                          </div>
+                          
+                          <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)', marginBottom: '6px' }}>
+                            <strong>Dataset Profile Parameters Used:</strong>
+                            <ul style={{ margin: '2px 0 0 14px', padding: 0, listStyleType: 'disc' }}>
+                              {analysisInfo.meta_learning_advice.dataset_characteristics.map((char, i) => (
+                                <li key={i} style={{ marginBottom: '1px' }}>{char}</li>
+                              ))}
+                            </ul>
+                          </div>
+                          
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '11px', marginTop: '6px' }}>
+                            <div>
+                              <strong style={{ color: 'var(--accent-color)', display: 'block', marginBottom: '1px' }}>Advantages & Convergence Benefits:</strong>
+                              <ul style={{ margin: '0 0 0 10px', padding: 0, listStyleType: 'circle', color: 'var(--text-secondary)' }}>
+                                {analysisInfo.meta_learning_advice.advantages.map((adv, i) => (
+                                  <li key={i} style={{ marginBottom: '1px' }}>{adv}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div>
+                              <strong style={{ color: '#d97706', display: 'block', marginBottom: '1px' }}>Tradeoffs & Computational Complexity:</strong>
+                              <ul style={{ margin: '0 0 0 10px', padding: 0, listStyleType: 'circle', color: 'var(--text-secondary)' }}>
+                                {analysisInfo.meta_learning_advice.tradeoffs.map((trade, i) => (
+                                  <li key={i} style={{ marginBottom: '1px' }}>{trade}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  {/* Dataset Personality Box */}
+                  {/* Dataset Characterization Box */}
                   <div className="personality-box" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', margin: 0 }}>
                     <div className="personality-title" style={{ margin: '0 0 8px 0' }}>
-                      <span>Dataset personality:</span>
+                      <span>Dataset Characterization:</span>
                       <span className="personality-badge">
                         {analysisInfo?.personality.complexity_category} Complexity
                       </span>
@@ -646,7 +786,7 @@ export default function Dashboard() {
                     <strong style={{ fontSize: '18px', color: 'var(--accent-color)', display: 'block', marginBottom: '8px', fontFamily: 'var(--font-display)', fontWeight: '400' }}>
                       {analysisInfo?.personality.title}
                     </strong>
-                    <p style={{ fontSize: '13px', margin: 0, color: 'var(--text-secondary)' }}>
+                    <p style={{ fontSize: '13px', margin: 0, color: 'var(--text-secondary)', lineHeight: '1.5' }}>
                       {analysisInfo?.personality.summary}
                     </p>
                   </div>
@@ -700,10 +840,10 @@ export default function Dashboard() {
                   <Trophy size={32} />
                 </div>
                 <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', fontWeight: '400', margin: '0 0 8px 0', color: 'var(--text-primary)' }}>
-                  Leaderboard Empty
+                  Performance Metrics Pending
                 </h3>
                 <p style={{ fontSize: '14px', color: 'var(--text-secondary)', maxWidth: '400px', margin: '0 auto 24px auto', lineHeight: '1.5' }}>
-                  The AutoML model leaderboard, parameter comparisons, and AI reports will be available once the training pipeline completes.
+                  The model validation leaderboard, relative parameter comparisons, and compiled experiment reports will populate once the cross-validation optimization runs complete.
                 </p>
                 <button className="btn btn-primary" onClick={() => {
                   if (uploadInfo) {
@@ -716,7 +856,7 @@ export default function Dashboard() {
                     setActiveTab('UPLOAD');
                   }
                 }} style={{ backgroundColor: 'var(--text-primary)', color: 'var(--bg-secondary)', border: 'none', padding: '12px 24px', borderRadius: '8px', cursor: 'pointer' }}>
-                  {uploadInfo ? (analysisInfo ? "Go to Battle Arena" : "Analyze Dataset") : "Upload a Dataset"}
+                  {uploadInfo ? (analysisInfo ? "Execute Parameter Optimization" : "Execute Schema Profiling") : "Ingest Dataset"}
                 </button>
               </div>
             )

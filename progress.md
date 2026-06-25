@@ -3,7 +3,7 @@
 **Date:** June 23, 2026  
 **Status:** `PRODUCTION-READY` (All development stages complete and verified)
 
-OptiML is a full-stack, globally shareable AutoML and Meta-Learning platform. Users can upload CSV datasets, automatically extract statistical meta-features, view rule-based and historical KNN algorithm recommendations, witness an animated model battle arena, inspect ranked leaderboards and feature attributions, and export professional AI-written reports as PDF documents.
+OptiML is a full-stack, globally shareable AutoML and Meta-Learning platform. Users can upload CSV datasets, automatically extract statistical meta-features, view rule-based and historical KNN algorithm recommendations, witness an animated model training dashboard, inspect ranked leaderboards and feature attributions, and export professional AI-written reports as PDF documents.
 
 ---
 
@@ -11,7 +11,7 @@ OptiML is a full-stack, globally shareable AutoML and Meta-Learning platform. Us
 
 ### 1.1 Backend Engine (Python, FastAPI, SQLite, Scikit-Learn, XGBoost)
 - [x] **Virtual Environment Setup**: Standardized virtual environment at [backend/.venv](file:///c:/Rakshith/projects/automl/backend/.venv) with clean dependencies (`pandas`, `numpy`, `scikit-learn`, `xgboost`, `reportlab`, `fastapi`, `uvicorn`, `pydantic`).
-- [x] **Metadata Profiling (`ml/analysis.py`)**: Automatic parsing of dimensions, continuous skewness, pairwise feature correlations, cellular missingness, and Y target data balances. Computes a **Complexity Score** and generates a creative **Dataset Personality Engine** description.
+- [x] **Metadata Profiling (`ml/analysis.py`)**: Automatic parsing of dimensions, continuous skewness, pairwise feature correlations, cellular missingness, and Y target data balances. Computes a **Complexity Score** and generates a **Dataset Characterization** profile.
 - [x] **Meta-Learning Advisor (`ml/meta_learning.py`)**: Merges a rule-based algorithm advisor with a learned KNN meta-model. The KNN model vectorizes dataset metrics and searches a SQLite historical database to output modeling weights and narrative justifications.
 - [x] **GridSearchCV AutoML Trainer (`ml/training.py`)**: Standardizes scaling and encoding preprocessing using an automated `ColumnTransformer` (Median/StandardScaler for numeric, Mode/OneHotEncoder for categorical). Fits and tunes 5 algorithms over stratified splits:
   1. *Logistic Regression* (C tuning)
@@ -27,7 +27,7 @@ OptiML is a full-stack, globally shareable AutoML and Meta-Learning platform. Us
 - [x] **Theme Toggling (`layout.js` & `globals.css`)**: Global light/dark toggle state that syncs selection with localStorage to prevent loading flashes. Styled entirely with custom CSS variables (Supabase/Vercel styling) and zero Tailwind dependencies.
 - [x] **Upload Workspace (`CsvUpload.js`)**: Drag-and-drop file targets validating extensions and featuring a **Load Synthetic Customer Churn Sample** mock button.
 - [x] **Preview Workspace (`DataPreview.js`)**: Paginated table rendering uploaded grids and selector for Y labels.
-- [x] **Model Battle Arena (`ModelBattle.js`)**: Competitor grid showing loader icons, leaderboard crown animations, and a timeline console streaming background fitting logs in real time.
+- [x] **Model Training Dashboard (`ModelBattle.js`)**: Real-time optimization progress dashboard showing loader icons, layout cards, and a timeline console streaming background CV logs.
 - [x] **Rankings Leaderboard (`Leaderboard.js`)**: Model comparisons and feature attribution attribution charts powered by Recharts.
 - [x] **Academic Report Hub (`AiExplanation.js`)**: Custom React markdown parser supporting bullet lists, blockquotes, and tables. Includes clipboard utilities and download routes.
 

@@ -28,7 +28,7 @@ def train_all_models(job_id: str, df: pd.DataFrame, target_col: str, progress_ca
         if progress_callback:
             progress_callback(msg, pct)
             
-    log_progress("Starting model training pipeline...", 5)
+    log_progress("Initializing model training pipeline and cross-validation layers...", 5)
     
     # 1. Drop rows where target is missing
     df = df.dropna(subset=[target_col]).copy()
@@ -44,7 +44,7 @@ def train_all_models(job_id: str, df: pd.DataFrame, target_col: str, progress_ca
     num_classes = len(le.classes_)
     is_binary = num_classes == 2
     
-    log_progress(f"Dataset target '{target_col}' encoded. Classes: {num_classes}.", 10)
+    log_progress(f"Target label '{target_col}' successfully mapped and encoded. Class counts: {num_classes}.", 10)
     
     # Identify numerical, low-cardinality, and high-cardinality columns
     numeric_features = []
@@ -71,9 +71,9 @@ def train_all_models(job_id: str, df: pd.DataFrame, target_col: str, progress_ca
                 high_card_categorical.append(col)
                 
     if dropped_features:
-        log_progress(f"Dropped non-generalizable identifier columns: {dropped_features}", 11)
+        log_progress(f"Excluded high-cardinality/identifier columns from the training partition: {dropped_features}", 11)
     if high_card_categorical:
-        log_progress(f"Ordinal encoding high-cardinality categorical columns (to prevent memory blowup): {high_card_categorical}", 12)
+        log_progress(f"Applying OrdinalEncoder transformations to high-cardinality variables: {high_card_categorical}", 12)
         
     # 2. Build preprocessing pipeline
     numeric_transformer = Pipeline(steps=[
@@ -116,7 +116,7 @@ def train_all_models(job_id: str, df: pd.DataFrame, target_col: str, progress_ca
             X, y_encoded, test_size=0.2, random_state=42
         )
         
-    log_progress(f"Train/Test split complete. Train shape: {X_train.shape}.", 15)
+    log_progress(f"Hold-out verification split completed. Training matrix shape: {X_train.shape}.", 15)
     
     # Preprocess train/test features to extract feature importances later
     X_train_preprocessed = preprocessor.fit_transform(X_train)
@@ -185,7 +185,7 @@ def train_all_models(job_id: str, df: pd.DataFrame, target_col: str, progress_ca
     
     # Train each model
     for model_name, cfg in models_config.items():
-        log_progress(f"Hyperparameter tuning and training {model_name}...", cfg["weight"])
+        log_progress(f"Executing hyperparameter grid search optimization and stratified CV loops for {model_name}...", cfg["weight"])
         start_time = time.time()
         
         pipeline = Pipeline(steps=[
@@ -330,7 +330,7 @@ def train_all_models(job_id: str, df: pd.DataFrame, target_col: str, progress_ca
             best_overall_score = accuracy
             best_overall_model = model_name
             
-    log_progress("Model training and validation completed.", 95)
+    log_progress("Cross-validation grid search completed. Starting feature attribution weights extraction...", 95)
     
     # Sort leaderboard by accuracy descending
     leaderboard = []
@@ -353,7 +353,7 @@ def train_all_models(job_id: str, df: pd.DataFrame, target_col: str, progress_ca
     sorted_importances = sorted(best_importances.items(), key=lambda x: x[1], reverse=True)
     feature_importance_list = [{"feature": f, "importance": round(imp, 4)} for f, imp in sorted_importances]
     
-    log_progress("Training job finalize.", 100)
+    log_progress("Optimization pipeline successfully finalized. Compiling evaluation artifact payload...", 100)
     
     return {
         "leaderboard": leaderboard,
