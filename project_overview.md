@@ -135,3 +135,57 @@ sequenceDiagram
     API->>Storage: Pulls PDF bytes from 'reports' bucket
     API-->>User: Streams PDF file download
 ```
+
+---
+
+## 5. Local Setup & Run Instructions
+
+To test the application locally with fallback SQLite and local storage mechanisms (or by configuring live Supabase environment parameters in `.env`), follow these commands:
+
+### ⚙️ Starting the FastAPI Backend
+Ensure Python 3.12+ and virtual environment dependencies are installed:
+```powershell
+# Navigate to the backend directory
+cd backend
+
+# Launch the FastAPI application using the local virtual environment Python executable
+.venv\Scripts\python main.py
+```
+- **Local API Host:** [http://127.0.0.1:8000](http://127.0.0.1:8000)
+- **Interactive Documentation (Swagger UI):** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+### 💻 Starting the Next.js Frontend
+Ensure Node.js is installed:
+```powershell
+# Navigate to the frontend directory
+cd frontend
+
+# Install client packages
+npm install
+
+# Run the development server
+npm run dev
+```
+- **Local Application Host:** [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 6. Automated Pipeline Verification
+
+To verify that all AutoML model training, statistical profiling, meta-feature recommendation, and PDF generation processes operate correctly, execute the automated verification test script:
+```powershell
+# Navigate to the backend directory
+cd backend
+
+# Execute the self-contained verification suite
+.venv\Scripts\python verify_pipeline.py
+```
+**Expected Output:**
+- Wipes and initializes the target database table structures.
+- Generates a synthetic classification matrix (500 samples, 10 columns).
+- Computes metrics and extracts algorithm recommendations.
+- Fits all 5 classifier algorithms (Logistic Regression, Random Forest, XGBoost, SVM, KNN) with hyperparameter grid optimization.
+- Generates a custom AI Research Report.
+- Compiles and saves a styled ReportLab PDF.
+- Returns `=== OPTIML ML ENGINE VERIFICATION SUCCESSFUL ===`.
+
