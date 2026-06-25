@@ -130,3 +130,41 @@ def get_file_bytes(bucket: str, path: str) -> bytes:
                 return f.read()
         else:
             raise FileNotFoundError(f"Local fallback file not found: {local_file}")
+
+def clear_all_storage():
+    """
+    Deletes all files in 'datasets' and 'reports' buckets.
+    """
+    if supabase_client:
+        try:
+            # 1. Clean 'datasets' bucket
+            dataset_files = supabase_client.storage.from_("datasets").list()
+            if dataset_files:
+                paths_to_remove = [f["name"] for f in dataset_files if f["name"] != ".keep"]
+                if paths_to_remove:
+                    supabase_client.storage.from_("datasets").remove(paths_to_remove)
+            
+            # 2. Clean 'reports' bucket
+            report_files = supabase_client.storage.from_("reports").list()
+            if report_files:
+                paths_to_remove = [f["name"] for f in report_files if f["name"] != ".keep"]
+                if paths_to_remove:
+                    supabase_client.storage.from_("reports").remove(paths_to_remove)
+                    
+            print("Successfully cleared all Supabase storage files for privacy.")
+        except Exception as e:
+            print(f"Error clearing Supabase Storage: {e}")
+    else:
+        # Clear local folders
+        for bucket in ["datasets", "reports"]:
+            local_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), bucket)
+            if os.path.exists(local_dir):
+                for filename in os.listdir(local_dir):
+                    file_path = os.path.join(local_dir, filename)
+                    try:
+                        if os.path.isfile(file_path) or os.path.islink(file_path):
+                            os.unlink(file_path)
+                        elif os.path.isdir(file_path):
+                            shutil.rmtree(file_path)
+                    except Exception as e:
+                        print(f"Failed to delete local file {file_path}: {e}")

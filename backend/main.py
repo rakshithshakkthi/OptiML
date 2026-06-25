@@ -191,6 +191,10 @@ async def upload_dataset(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, buffer)
         
     try:
+        # Clear storage and database for user privacy before saving/creating anything new
+        storage.clear_all_storage()
+        database.clear_all_jobs_and_memory()
+
         # 1. Upload CSV to Supabase Storage
         storage.upload_file("datasets", temp_filepath, f"{job_id}.csv", mime_type="text/csv")
         

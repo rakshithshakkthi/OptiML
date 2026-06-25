@@ -17,7 +17,7 @@ import AiExplanation from './AiExplanation';
 import { API_URL } from '../config';
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState('UPLOAD'); // OVERVIEW, UPLOAD, PREVIEW, BATTLE, RESULTS
+  const [activeTab, setActiveTab] = useState('UPLOAD'); // UPLOAD, PREVIEW, BATTLE, RESULTS
   const [uploadInfo, setUploadInfo] = useState(null);
   const [analysisInfo, setAnalysisInfo] = useState(null);
   const [selectedTarget, setSelectedTarget] = useState('');
@@ -27,6 +27,10 @@ export default function Dashboard() {
   const [theme, setTheme] = useState('dark');
   const [backendHealth, setBackendHealth] = useState('CHECKING'); // CHECKING, ONLINE, OFFLINE
   
+  // Modal alerts state for empty views
+  const [showNoDatasetModal, setShowNoDatasetModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+
   // Progress tracker state
   const [jobProgress, setJobProgress] = useState({
     status: 'PENDING',
@@ -37,45 +41,12 @@ export default function Dashboard() {
   
   const pollingRef = useRef(null);
 
-  // System stats from backend database (replaces hardcoded visual metrics)
-  const [systemStats, setSystemStats] = useState({
-    total_datasets: 0,
-    total_models_trained: 0,
-    avg_accuracy: 0.0,
-    active_jobs: [],
-    past_jobs: []
-  });
-
-  const fetchSystemStats = async () => {
-    try {
-      const res = await fetch(`${API_URL}/system-stats`);
-      if (res.ok) {
-        const data = await res.json();
-        setSystemStats(data);
-      }
-    } catch (err) {
-      console.warn('Transient error fetching system stats:', err.message || err);
-    }
-  };
-
   // Sync theme state on load
   useEffect(() => {
     const activeTheme = document.documentElement.getAttribute('data-theme') || 'dark';
     setTheme(activeTheme);
     checkBackendHealth();
   }, []);
-
-  // Poll system stats periodically while training to reflect progress in Overview dynamically
-  useEffect(() => {
-    fetchSystemStats();
-    let statsInterval = null;
-    if (jobProgress.status === 'RUNNING') {
-      statsInterval = setInterval(fetchSystemStats, 2000);
-    }
-    return () => {
-      if (statsInterval) clearInterval(statsInterval);
-    };
-  }, [jobProgress.status]);
 
   const checkBackendHealth = async () => {
     setBackendHealth('CHECKING');
@@ -253,29 +224,13 @@ export default function Dashboard() {
   // Breadcrumb helper matching current tab title
   const getBreadcrumbTitle = () => {
     switch (activeTab) {
-      case 'OVERVIEW': return 'Overview';
       case 'UPLOAD': return 'Upload Dataset';
       case 'PREVIEW': return 'Structure & Target';
       case 'BATTLE': return 'Model Battle Arena';
       case 'RESULTS': return 'Leaderboards & Reports';
-      default: return 'Overview';
+      default: return 'Upload Dataset';
     }
   };
-
-  // Find best performing model from past jobs
-  const getBestPerformer = () => {
-    if (!systemStats.past_jobs || systemStats.past_jobs.length === 0) return 'None';
-    const sortedJobs = [...systemStats.past_jobs].sort((a, b) => b.best_score - a.best_score);
-    return sortedJobs[0].best_model || 'None';
-  };
-
-  // Overview metrics pulled dynamically from backend
-  const metrics = {
-    bestPerformer: getBestPerformer(),
-    modelsTrained: systemStats.total_models_trained,
-    avgAccuracy: typeof systemStats.avg_accuracy === 'number' ? systemStats.avg_accuracy.toFixed(1) + '%' : '0.0%'
-  };
-  const isCompleted = jobProgress.status === 'COMPLETED';
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
@@ -336,31 +291,14 @@ export default function Dashboard() {
 
         <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', alignItems: sidebarCollapsed ? 'center' : 'stretch' }}>
           <div 
-            onClick={() => setActiveTab('OVERVIEW')}
-            className={`aside-nav-link ${activeTab === 'OVERVIEW' ? 'active' : ''}`}
-            style={{ 
-              justifyContent: sidebarCollapsed ? 'center' : 'flex-start',
-              padding: sidebarCollapsed ? '10px' : '10px 16px',
-              width: sidebarCollapsed ? '42px' : '100%',
-              borderRadius: '8px'
-            }}
-            title={sidebarCollapsed ? "Overview" : ""}
-          >
-            <Activity size={18} />
-            {!sidebarCollapsed && <span>Overview</span>}
-          </div>
-
-          <div 
             onClick={() => {
-              if (activeTab !== 'BATTLE') {
-                if (uploadInfo) {
-                  setActiveTab('PREVIEW');
-                } else {
-                  setActiveTab('UPLOAD');
-                }
+              if (uploadInfo) {
+                setActiveTab('PREVIEW');
+              } else {
+                setActiveTab('UPLOAD');
               }
             }}
-            className={`aside-nav-link ${(activeTab === 'UPLOAD' || activeTab === 'PREVIEW') ? 'active' : ''} ${activeTab === 'BATTLE' ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`aside-nav-link ${(activeTab === 'UPLOAD' || activeTab === 'PREVIEW') ? 'active' : ''}`}
             style={{ 
               justifyContent: sidebarCollapsed ? 'center' : 'flex-start',
               padding: sidebarCollapsed ? '10px' : '10px 16px',
@@ -374,30 +312,44 @@ export default function Dashboard() {
           </div>
 
           <div 
-            onClick={() => analysisInfo && setActiveTab('BATTLE')}
-            className={`aside-nav-link ${activeTab === 'BATTLE' ? 'active' : ''} ${!analysisInfo ? 'opacity-50 cursor-not-allowed' : ''}`}
+            onClick={() => {
+              if (!uploadInfo) {
+                setModalMessage("To access the Model Battle Arena, you need to upload a dataset and run the initial profiling first.");
+                setShowNoDatasetModal(true);
+              } else {
+                setActiveTab('BATTLE');
+              }
+            }}
+            className={`aside-nav-link ${activeTab === 'BATTLE' ? 'active' : ''}`}
             style={{ 
               justifyContent: sidebarCollapsed ? 'center' : 'flex-start',
               padding: sidebarCollapsed ? '10px' : '10px 16px',
               width: sidebarCollapsed ? '42px' : '100%',
               borderRadius: '8px'
             }}
-            title={sidebarCollapsed ? (analysisInfo ? "Battle Arena" : "Upload and profile a dataset first") : ""}
+            title={sidebarCollapsed ? "Battle Arena" : ""}
           >
             <Swords size={18} />
             {!sidebarCollapsed && <span>Battle Arena</span>}
           </div>
 
           <div 
-            onClick={() => jobProgress.status === 'COMPLETED' && setActiveTab('RESULTS')}
-            className={`aside-nav-link ${activeTab === 'RESULTS' ? 'active' : ''} ${jobProgress.status !== 'COMPLETED' ? 'opacity-50 cursor-not-allowed' : ''}`}
+            onClick={() => {
+              if (jobProgress.status !== 'COMPLETED') {
+                setModalMessage("The Leaderboards and AI Research Reports will be available once the AutoML training pipeline completes.");
+                setShowNoDatasetModal(true);
+              } else {
+                setActiveTab('RESULTS');
+              }
+            }}
+            className={`aside-nav-link ${activeTab === 'RESULTS' ? 'active' : ''}`}
             style={{ 
               justifyContent: sidebarCollapsed ? 'center' : 'flex-start',
               padding: sidebarCollapsed ? '10px' : '10px 16px',
               width: sidebarCollapsed ? '42px' : '100%',
               borderRadius: '8px'
             }}
-            title={sidebarCollapsed ? (jobProgress.status === 'COMPLETED' ? "Leaderboards" : "Complete training to view results") : ""}
+            title={sidebarCollapsed ? "Leaderboards" : ""}
           >
             <Trophy size={18} />
             {!sidebarCollapsed && <span>Leaderboards</span>}
@@ -582,167 +534,12 @@ export default function Dashboard() {
             </div>
           )}
 
-          {/* 1. OVERVIEW TAB VIEW */}
-          {activeTab === 'OVERVIEW' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-              {/* High-level metrics */}
-              <section className="grid-3" style={{ display: 'grid', gap: '20px' }}>
-                <div className="metric-card">
-                  <span className="metric-label">Best Performer</span>
-                  <h2 className="metric-value" style={{ 
-                    fontSize: metrics.bestPerformer.length > 12 ? '22px' : '36px', 
-                    whiteSpace: 'nowrap', 
-                    overflow: 'hidden', 
-                    textOverflow: 'ellipsis' 
-                  }} title={metrics.bestPerformer}>
-                    {metrics.bestPerformer}
-                  </h2>
-                  <span className="metric-subtext">Highest accuracy model class</span>
-                  <div style={{ position: 'absolute', right: '-10px', bottom: '-10px', opacity: 0.08, rotate: '12deg', color: 'var(--text-primary)' }}>
-                    <Award size={80} />
-                  </div>
-                </div>
-
-                <div className="metric-card">
-                  <span className="metric-label">Models Trained</span>
-                  <h2 className="metric-value">{metrics.modelsTrained}</h2>
-                  <span className="metric-subtext">Total tuning configurations</span>
-                  <div style={{ position: 'absolute', right: '-10px', bottom: '-10px', opacity: 0.08, rotate: '12deg', color: 'var(--text-primary)' }}>
-                    <Cpu size={80} />
-                  </div>
-                </div>
-
-                <div className="metric-card">
-                  <span className="metric-label">Avg. Accuracy</span>
-                  <h2 className="metric-value">{metrics.avgAccuracy}</h2>
-                  <span className="metric-subtext">Stratified validation hold-outs</span>
-                  <div style={{ position: 'absolute', right: '-10px', bottom: '-10px', opacity: 0.08, rotate: '12deg', color: 'var(--text-primary)' }}>
-                    <Trophy size={80} />
-                  </div>
-                </div>
-              </section>
-
-              {/* Active Experiments */}
-              <div className="panel" style={{ backgroundColor: 'var(--bg-tertiary)', border: '1px solid var(--border-beige-deep)', display: 'flex', flexDirection: 'column', padding: '24px' }}>
-                <h3 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '20px' }}>Active Experiments</h3>
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {/* Render active running jobs on server */}
-                  {systemStats.active_jobs && systemStats.active_jobs.length > 0 ? (
-                    systemStats.active_jobs.map((job) => (
-                      <div key={job.job_id} style={{ backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border-color)', padding: '16px', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontWeight: '600', fontSize: '14px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={job.filename}>
-                            {job.filename}
-                          </span>
-                          <span style={{ fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', backgroundColor: 'rgba(255, 95, 31, 0.15)', color: 'var(--accent-color)', padding: '3px 8px', borderRadius: '4px' }}>
-                            {job.progress}%
-                          </span>
-                        </div>
-                        <div style={{ width: '100%', height: '4px', backgroundColor: 'var(--border-color)', borderRadius: '2px', overflow: 'hidden' }}>
-                          <div style={{ width: `${job.progress}%`, height: '100%', backgroundColor: 'var(--accent-color)' }} />
-                        </div>
-                        <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                          {job.current_log || 'Fitting pipelines...'}
-                        </span>
-                      </div>
-                    ))
-                  ) : jobProgress.status === 'RUNNING' ? (
-                    <div style={{ backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border-color)', padding: '16px', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontWeight: '600', fontSize: '14px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {uploadInfo?.filename || 'Active_Job'}
-                        </span>
-                        <span style={{ fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', backgroundColor: 'rgba(255, 95, 31, 0.15)', color: 'var(--accent-color)', padding: '3px 8px', borderRadius: '4px' }}>
-                          Fitting
-                        </span>
-                      </div>
-                      <div style={{ width: '100%', height: '4px', backgroundColor: 'var(--border-color)', borderRadius: '2px', overflow: 'hidden' }}>
-                        <div style={{ width: `${jobProgress.progress}%`, height: '100%', backgroundColor: 'var(--accent-color)', animation: 'pulse 1.5s infinite' }} />
-                      </div>
-                      <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                        {jobProgress.progress}% &bull; {jobProgress.current_log || 'Fitting pipelines...'}
-                      </span>
-                    </div>
-                  ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 16px', border: '1px dashed var(--border-color)', borderRadius: '8px', color: 'var(--text-muted)', fontSize: '13px', backgroundColor: 'var(--bg-cream-soft)' }}>
-                      No active background tasks.
-                    </div>
-                  )}
-                </div>
-                
-                <button 
-                  onClick={() => {
-                    if (!uploadInfo) {
-                      setActiveTab('UPLOAD');
-                    } else if (!analysisInfo) {
-                      setActiveTab('PREVIEW');
-                    } else if (jobProgress.status === 'RUNNING') {
-                      setActiveTab('BATTLE');
-                    } else {
-                      setActiveTab('RESULTS');
-                    }
-                  }}
-                  className="btn btn-secondary" 
-                  style={{ width: '100%', marginTop: '20px', fontSize: '13px', padding: '10px 16px' }}
-                >
-                  View Pipeline Interface
-                </button>
-              </div>
-
-              {/* Performance Leaderboard */}
-              <section className="panel" style={{ padding: 0, overflow: 'hidden' }}>
-                <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--bg-cream-soft)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <h3 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>Performance Leaderboard</h3>
-                  <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Benchmark comparisons</span>
-                </div>
-                <div style={{ overflowX: 'auto' }}>
-                  <table className="data-table" style={{ width: '100%' }}>
-                    <thead>
-                      <tr>
-                        <th>Model Name</th>
-                        <th>Dataset Source</th>
-                        <th style={{ textAlign: 'center' }}>Target Parameter</th>
-                        <th style={{ textAlign: 'right' }}>Top Accuracy</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {systemStats.past_jobs && systemStats.past_jobs.length > 0 ? (
-                        systemStats.past_jobs.map((job, idx) => (
-                          <tr key={job.job_id} style={{ backgroundColor: idx === 0 ? 'var(--accent-light)' : 'transparent' }}>
-                            <td style={{ fontWeight: '700' }}>
-                              {idx === 0 ? '🏆 ' : ''}{job.best_model}
-                            </td>
-                            <td style={{ maxWidth: '240px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={job.filename}>
-                              {job.filename}
-                            </td>
-                            <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)' }}>
-                              {job.target_column}
-                            </td>
-                            <td style={{ textAlign: 'right', fontWeight: '700', color: 'var(--accent-color)' }}>
-                              {(job.best_score * 100).toFixed(2)}%
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="4" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '24px' }}>
-                            No past experiments. Upload a dataset and train models to see them here!
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </section>
-            </div>
-          )}
-
-          {/* 2. UPLOAD VIEW */}
+          {/* 1. UPLOAD VIEW */}
           {activeTab === 'UPLOAD' && (
             <CsvUpload onUploadSuccess={handleUploadSuccess} />
           )}
 
-          {/* 3. PREVIEW VIEW */}
+          {/* 2. PREVIEW VIEW */}
           {activeTab === 'PREVIEW' && uploadInfo && (
             <DataPreview 
               uploadInfo={uploadInfo} 
@@ -750,91 +547,179 @@ export default function Dashboard() {
             />
           )}
 
-          {/* 4. BATTLE VIEW */}
+          {/* 3. BATTLE VIEW */}
           {activeTab === 'BATTLE' && (
-            <ModelBattle jobProgress={jobProgress} />
-          )}
-
-          {/* 5. RESULTS VIEW */}
-          {activeTab === 'RESULTS' && jobProgress.status === 'COMPLETED' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-              
-              {/* Analysis Info and Advisor Card */}
-              <div className="grid-2">
-                {/* Advisor Card */}
-                <div className="panel" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                    <Layers size={20} style={{ color: 'var(--accent-color)' }} />
-                    <h4 style={{ margin: 0 }}>Meta-Learning Engine Recommendation</h4>
-                  </div>
-                  <p style={{ fontSize: '14px', marginBottom: '16px' }}>
-                    Based on historical dataset profiles in SQLite database, our recommender advisor predicted:
-                  </p>
-                  
-                  <div style={{
-                    padding: '16px',
-                    backgroundColor: 'var(--bg-cream-soft)',
-                    borderRadius: '8px',
-                    borderLeft: '4px solid var(--accent-color)',
-                    marginBottom: '16px',
-                    border: '1px solid var(--border-color)',
-                    borderLeftWidth: '4px'
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
-                      <strong style={{ fontSize: '18px', color: 'var(--text-primary)' }}>
-                        {analysisInfo?.meta_learning_advice.best_model}
-                      </strong>
-                      <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                        Confidence: {(analysisInfo?.meta_learning_advice.confidence_score * 100).toFixed(0)}%
-                      </span>
-                    </div>
-                    <p style={{ fontSize: '13px', margin: 0, color: 'var(--text-secondary)' }}>
-                      {analysisInfo?.meta_learning_advice.justification}
-                    </p>
-                  </div>
-
-                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                    <strong>Actual Winner: </strong> {jobProgress.best_model} (Accuracy: {(jobProgress.best_score * 100).toFixed(2)}%)
-                  </div>
+            uploadInfo ? (
+              <ModelBattle jobProgress={jobProgress} />
+            ) : (
+              <div className="panel" style={{ 
+                textAlign: 'center', 
+                padding: '64px 32px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'var(--bg-tertiary)',
+                border: '1px solid var(--border-color)',
+                borderRadius: '16px',
+                maxWidth: '640px',
+                margin: '40px auto'
+              }}>
+                <div style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(255, 95, 31, 0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '20px',
+                  color: 'var(--accent-color)'
+                }}>
+                  <Swords size={32} />
                 </div>
-
-                {/* Dataset Personality Box */}
-                <div className="personality-box" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', margin: 0 }}>
-                  <div className="personality-title" style={{ margin: '0 0 8px 0' }}>
-                    <span>Dataset personality:</span>
-                    <span className="personality-badge">
-                      {analysisInfo?.personality.complexity_category} Complexity
-                    </span>
-                  </div>
-                  <strong style={{ fontSize: '18px', color: 'var(--accent-color)', display: 'block', marginBottom: '8px', fontFamily: 'var(--font-display)', fontWeight: '400' }}>
-                    {analysisInfo?.personality.title}
-                  </strong>
-                  <p style={{ fontSize: '13px', margin: 0, color: 'var(--text-secondary)' }}>
-                    {analysisInfo?.personality.summary}
-                  </p>
-                </div>
-              </div>
-
-              {/* Model Rankings Leaderboard & Charts */}
-              <Leaderboard 
-                leaderboard={jobProgress.leaderboard}
-                featureImportances={jobProgress.feature_importances}
-              />
-
-              {/* AI Explanation markdown report & Export */}
-              <AiExplanation 
-                jobId={uploadInfo.job_id}
-                reportMarkdown={jobProgress.ai_report}
-              />
-
-              {/* Option to restart */}
-              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
-                <button className="btn btn-secondary" onClick={handleReset} style={{ gap: '8px' }}>
-                  <RefreshCw size={14} />
-                  Process Another Dataset
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', fontWeight: '400', margin: '0 0 8px 0', color: 'var(--text-primary)' }}>
+                  Battle Arena Locked
+                </h3>
+                <p style={{ fontSize: '14px', color: 'var(--text-secondary)', maxWidth: '400px', margin: '0 auto 24px auto', lineHeight: '1.5' }}>
+                  The AutoML Model Battle Arena is not active because there is no dataset uploaded. Please upload a CSV dataset to profile features and start model training.
+                </p>
+                <button className="btn btn-primary" onClick={() => setActiveTab('UPLOAD')} style={{ backgroundColor: 'var(--text-primary)', color: 'var(--bg-secondary)', border: 'none', padding: '12px 24px', borderRadius: '8px', cursor: 'pointer' }}>
+                  Upload a Dataset
                 </button>
               </div>
-            </div>
+            )
+          )}
+
+          {/* 4. RESULTS VIEW */}
+          {activeTab === 'RESULTS' && (
+            jobProgress.status === 'COMPLETED' ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                
+                {/* Analysis Info and Advisor Card */}
+                <div className="grid-2">
+                  {/* Advisor Card */}
+                  <div className="panel" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                      <Layers size={20} style={{ color: 'var(--accent-color)' }} />
+                      <h4 style={{ margin: 0 }}>Meta-Learning Engine Recommendation</h4>
+                    </div>
+                    <p style={{ fontSize: '14px', marginBottom: '16px' }}>
+                      Based on historical dataset profiles in SQLite database, our recommender advisor predicted:
+                    </p>
+                    
+                    <div style={{
+                      padding: '16px',
+                      backgroundColor: 'var(--bg-cream-soft)',
+                      borderRadius: '8px',
+                      borderLeft: '4px solid var(--accent-color)',
+                      marginBottom: '16px',
+                      border: '1px solid var(--border-color)',
+                      borderLeftWidth: '4px'
+                    }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
+                        <strong style={{ fontSize: '18px', color: 'var(--text-primary)' }}>
+                          {analysisInfo?.meta_learning_advice.best_model}
+                        </strong>
+                        <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                          Confidence: {(analysisInfo?.meta_learning_advice.confidence_score * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                      <p style={{ fontSize: '13px', margin: 0, color: 'var(--text-secondary)' }}>
+                        {analysisInfo?.meta_learning_advice.justification}
+                      </p>
+                    </div>
+
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                      <strong>Actual Winner: </strong> {jobProgress.best_model} (Accuracy: {(jobProgress.best_score * 100).toFixed(2)}%)
+                    </div>
+                  </div>
+
+                  {/* Dataset Personality Box */}
+                  <div className="personality-box" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', margin: 0 }}>
+                    <div className="personality-title" style={{ margin: '0 0 8px 0' }}>
+                      <span>Dataset personality:</span>
+                      <span className="personality-badge">
+                        {analysisInfo?.personality.complexity_category} Complexity
+                      </span>
+                    </div>
+                    <strong style={{ fontSize: '18px', color: 'var(--accent-color)', display: 'block', marginBottom: '8px', fontFamily: 'var(--font-display)', fontWeight: '400' }}>
+                      {analysisInfo?.personality.title}
+                    </strong>
+                    <p style={{ fontSize: '13px', margin: 0, color: 'var(--text-secondary)' }}>
+                      {analysisInfo?.personality.summary}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Model Rankings Leaderboard & Charts */}
+                <Leaderboard 
+                  leaderboard={jobProgress.leaderboard}
+                  featureImportances={jobProgress.feature_importances}
+                />
+
+                {/* AI Explanation markdown report & Export */}
+                <AiExplanation 
+                  jobId={uploadInfo.job_id}
+                  reportMarkdown={jobProgress.ai_report}
+                />
+
+                {/* Option to restart */}
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
+                  <button className="btn btn-secondary" onClick={handleReset} style={{ gap: '8px' }}>
+                    <RefreshCw size={14} />
+                    Process Another Dataset
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="panel" style={{ 
+                textAlign: 'center', 
+                padding: '64px 32px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'var(--bg-tertiary)',
+                border: '1px solid var(--border-color)',
+                borderRadius: '16px',
+                maxWidth: '640px',
+                margin: '40px auto'
+              }}>
+                <div style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(255, 95, 31, 0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '20px',
+                  color: 'var(--accent-color)'
+                }}>
+                  <Trophy size={32} />
+                </div>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', fontWeight: '400', margin: '0 0 8px 0', color: 'var(--text-primary)' }}>
+                  Leaderboard Empty
+                </h3>
+                <p style={{ fontSize: '14px', color: 'var(--text-secondary)', maxWidth: '400px', margin: '0 auto 24px auto', lineHeight: '1.5' }}>
+                  The AutoML model leaderboard, parameter comparisons, and AI reports will be available once the training pipeline completes.
+                </p>
+                <button className="btn btn-primary" onClick={() => {
+                  if (uploadInfo) {
+                    if (analysisInfo) {
+                      setActiveTab('BATTLE');
+                    } else {
+                      setActiveTab('PREVIEW');
+                    }
+                  } else {
+                    setActiveTab('UPLOAD');
+                  }
+                }} style={{ backgroundColor: 'var(--text-primary)', color: 'var(--bg-secondary)', border: 'none', padding: '12px 24px', borderRadius: '8px', cursor: 'pointer' }}>
+                  {uploadInfo ? (analysisInfo ? "Go to Battle Arena" : "Analyze Dataset") : "Upload a Dataset"}
+                </button>
+              </div>
+            )
           )}
 
           {/* Handle failed training job */}
@@ -877,6 +762,77 @@ export default function Dashboard() {
         </div>
       </main>
 
+      {/* Premium Alert Modal */}
+      {showNoDatasetModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 999,
+          padding: '20px',
+          animation: 'fadeIn 0.2s ease'
+        }}>
+          <div style={{
+            backgroundColor: 'var(--bg-secondary)',
+            border: '1px solid var(--border-color)',
+            borderRadius: '16px',
+            maxWidth: '480px',
+            width: '100%',
+            padding: '32px',
+            boxShadow: 'var(--shadow-lg)',
+            position: 'relative',
+            textAlign: 'center',
+            animation: 'slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
+          }}>
+            <div style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(255, 95, 31, 0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 20px auto',
+              color: 'var(--accent-color)'
+            }}>
+              <AlertTriangle size={32} />
+            </div>
+            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', fontWeight: '400', margin: '0 0 12px 0', color: 'var(--text-primary)' }}>
+              Action Required
+            </h3>
+            <p style={{ fontSize: '14px', color: 'var(--text-secondary)', margin: '0 0 24px 0', lineHeight: '1.5' }}>
+              {modalMessage}
+            </p>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+              <button 
+                className="btn btn-secondary"
+                onClick={() => setShowNoDatasetModal(false)}
+                style={{ padding: '10px 20px', fontSize: '13px', borderRadius: '8px', cursor: 'pointer' }}
+              >
+                Dismiss
+              </button>
+              <button 
+                className="btn btn-primary"
+                onClick={() => {
+                  setShowNoDatasetModal(false);
+                  setActiveTab('UPLOAD');
+                }}
+                style={{ padding: '10px 20px', fontSize: '13px', backgroundColor: 'var(--text-primary)', color: 'var(--bg-secondary)', border: 'none', borderRadius: '8px', cursor: 'pointer' }}
+              >
+                Upload Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <style jsx global>{`
         @keyframes spin {
           to { transform: rotate(360deg); }
@@ -884,6 +840,14 @@ export default function Dashboard() {
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.5; }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideUp {
+          from { transform: translateY(20px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
         }
       `}</style>
     </div>

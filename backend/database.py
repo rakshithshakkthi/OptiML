@@ -67,6 +67,19 @@ def init_db():
     Base.metadata.create_all(bind=engine)
     print("Database tables initialized.")
 
+def clear_all_jobs_and_memory():
+    db = SessionLocal()
+    try:
+        db.query(Job).delete()
+        db.query(MetaMemory).delete()
+        db.commit()
+        print("Successfully wiped jobs and meta_memory tables for privacy.")
+    except Exception as e:
+        db.rollback()
+        print(f"Error wiping database tables: {e}")
+    finally:
+        db.close()
+
 def create_job(job_id, filename):
     db = SessionLocal()
     try:

@@ -1,0 +1,27 @@
+# Virtual Environment
+backend/.venv/
+backend/uploads/
+backend/reports/
+backend/__pycache__/
+backend/ml/__pycache__/
+backend/ml/*/__pycache__/
+backend/*.db
+.venv/
+__pycache__/
+
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+node_modules/
+.next/
+
+# Archives & Temporary files
+*.zip
+*.db
+.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
