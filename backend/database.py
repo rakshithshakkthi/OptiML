@@ -144,6 +144,13 @@ def get_job(job_id):
     try:
         job = db.query(Job).filter(Job.job_id == job_id).first()
         if job:
+            personality_val = None
+            if job.personality:
+                try:
+                    personality_val = json.loads(job.personality)
+                except Exception:
+                    personality_val = job.personality
+                    
             res = {
                 "job_id": job.job_id,
                 "filename": job.filename,
@@ -158,7 +165,7 @@ def get_job(job_id):
                 "best_score": job.best_score,
                 "status": job.status,
                 "results": json.loads(job.results) if job.results else None,
-                "personality": job.personality,
+                "personality": personality_val,
                 "created_at": job.created_at.isoformat() if job.created_at else None
             }
             return res
