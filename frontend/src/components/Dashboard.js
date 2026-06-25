@@ -66,7 +66,7 @@ export default function Dashboard() {
   const toggleTheme = () => {
     const nextTheme = theme === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', nextTheme);
-    localStorage.setItem('metaml_theme', nextTheme);
+    localStorage.setItem('optiml_theme', nextTheme);
     setTheme(nextTheme);
   };
 

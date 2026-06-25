@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
             __html: `
               (function() {
                 try {
-                  const storedTheme = localStorage.getItem('metaml_theme');
+                  const storedTheme = localStorage.getItem('optiml_theme');
                   if (storedTheme === 'light') {
                     document.documentElement.setAttribute('data-theme', 'light');
                   } else {

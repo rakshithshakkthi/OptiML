@@ -111,7 +111,7 @@ def generate_pdf_report(meta: dict, training: dict, output_path: str):
     story = []
     
     # 1. Header Page Section
-    story.append(Paragraph("MetaML Research Report", title_style))
+    story.append(Paragraph("OptiML Research Report", title_style))
     story.append(Paragraph(f"Automated Pipeline Optimization & Meta-Analysis: {meta['personality']['title']}", subtitle_style))
     story.append(Spacer(1, 0.1 * inch))
     
@@ -122,7 +122,7 @@ def generate_pdf_report(meta: dict, training: dict, output_path: str):
         f"and outlines findings from training multiple competitive machine learning architectures. "
         f"Using cross-validated grid search, the <b>{training['best_model']}</b> pipeline was selected as the optimal model, "
         f"achieving a final cross-validated test accuracy of <b>{training['best_score']*100:.2f}%</b>. "
-        f"The model details have been logged in the MetaML memory bank for future offline meta-learning advice."
+        f"The model details have been logged in the OptiML memory bank for future offline meta-learning advice."
     )
     story.append(Paragraph(exec_summary, body_style))
     story.append(Spacer(1, 0.1 * inch))

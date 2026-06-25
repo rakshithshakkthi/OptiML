@@ -7,7 +7,7 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     # Use SQLite fallback
     DB_DIR = os.path.dirname(os.path.abspath(__file__))
-    DATABASE_URL = f"sqlite:///{os.path.join(DB_DIR, 'metaml.db')}"
+    DATABASE_URL = f"sqlite:///{os.path.join(DB_DIR, 'optiml.db')}"
     print(f"DATABASE_URL not found. Falling back to local SQLite database: {DATABASE_URL}")
 else:
     # Handle Render/Heroku postgresql:// vs postgres:// URL scheme mismatch

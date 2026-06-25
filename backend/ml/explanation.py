@@ -29,7 +29,7 @@ def generate_report(meta_results: dict, training_results: dict) -> str:
     missing_status = f"{meta_results['missing_ratio']*100:.1f}% missingness"
     
     # Generate the text
-    report = f"""# MetaML Research Report: Pipeline Optimization & Meta-Analysis
+    report = f"""# OptiML Research Report: Pipeline Optimization & Meta-Analysis
 **System Personality Tag:** *{personality['title']}*
 **Execution ID:** Pipeline Evaluation Run
 
@@ -87,7 +87,7 @@ The top features dominate the boundary partition. The variable **`{top_features[
 ---
 
 ## 5. Preprocessing & Engineering Safeguards
-To guarantee clean convergence, the MetaML automated preprocessor executed the following safeguards:
+To guarantee clean convergence, the OptiML automated preprocessor executed the following safeguards:
 1. **Numerical Cleanups:** Missing numerical values were imputed via median values (resisting outlier pull), and scaled using a standard Z-score standardizer ($X_s = \\frac{{X - \\mu}}{{\\sigma}}$) to bring all continuous spaces into standard scales (essential for KNN and SVM).
 2. **Categorical Handling:** Categorical values were imputed with the most frequent value (mode) and converted to binary columns using One-Hot encoding.
 3. **Target Cleanups:** Missing target labels were dropped, and target strings were index-encoded to support multi-class gradient boosting interfaces.

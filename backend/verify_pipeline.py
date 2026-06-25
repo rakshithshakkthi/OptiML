@@ -15,7 +15,7 @@ from ml.explanation import generate_report
 from ml.report import generate_pdf_report
 
 def run_verification():
-    print("=== STARTING METAML ML ENGINE VERIFICATION ===")
+    print("=== STARTING OPTIML ML ENGINE VERIFICATION ===")
     
     # 1. Initialize SQLite Database
     print("\n1. Initializing database and pre-seeding...")
@@ -130,7 +130,7 @@ def run_verification():
         assert os.path.exists(pdf_path), "PDF file was not created!"
         print(f"PDF File size: {os.path.getsize(pdf_path)} bytes.")
         
-        print("\n=== METAML ML ENGINE VERIFICATION SUCCESSFUL ===")
+        print("\n=== OPTIML ML ENGINE VERIFICATION SUCCESSFUL ===")
         
     finally:
         # Cleanup
