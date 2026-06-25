@@ -6,18 +6,18 @@ OptiML is an enterprise-grade, full-stack AutoML and Meta-Learning platform desi
 
 ## 1. System Features & Capabilities
 
-### 📄 Dataset Upload & Preview
+### Dataset Upload & Preview
 - **CSV Processing**: Accepts custom CSV uploads or generates a synthetic customer churn dataset for instant trial.
 - **Smart Column Profiling**: Parses dataset structure, extracts column headers, identifies data types, and recommends default target labels.
 - **High-Fidelity Preview Table**: Renders the first 10 rows of the dataset in a clean, interactive, paginated table with light/dark adaptive typography.
 
-### 🧠 Rule-Based & KNN Meta-Learning
+### Rule-Based & KNN Meta-Learning
 - **Meta-Feature Extraction**: Computes dataset shape (rows/columns ratio), missing value ratios, skewness mean, feature correlation matrices, and categorical feature densities.
 - **KNN Meta-Learner**: Compares the dataset's meta-feature vector against historical dataset runs saved in the Postgres database using a K-Nearest Neighbors distance metric to identify similar data distributions.
 - **AutoML Recommendation Advisor**: Recommends the optimal preprocessing scaling strategies (StandardScaler, MinMaxScaler, RobustScaler), class imbalance handling, and model priorities (e.g., advising tree-based ensembles for high-dimensional skewness).
 - **Dataset Characterization**: Dynamically tags the dataset with a distinct classification (e.g., *"Wide Sparse Dataset"*, *"Correlated Dense Grid"*) and assigns a corresponding statistical character profile.
 
-### ⚔️ Model Training Dashboard
+### Model Training Dashboard
 - **Asynchronous Training Worker**: Triggers non-blocking training jobs using FastAPI `BackgroundTasks` to avoid HTTP timeouts during long-running grid searches.
 - **Multi-Algorithm Grid Search**: Evaluates 5 machine learning models in parallel:
   - **Logistic Regression**: Linear boundary baseline.
@@ -28,12 +28,12 @@ OptiML is an enterprise-grade, full-stack AutoML and Meta-Learning platform desi
 - **GridSearchCV Hyperparameter Tuning**: Automatically optimizes hyperparameters and reports accuracy, precision, recall, and F1 scores.
 - **Live Consolidation Console**: Streams real-time fitting logs, accuracy increments, and training pipeline steps directly to a terminal console component on the frontend.
 
-### 🏆 Leaderboard & Attribution
+### Leaderboard & Attribution
 - **Performance Leaderboard**: Ranks model evaluations, dynamically awarding the top-ranked model with a gold outline and an `OPTIMAL PIPELINE` badge.
 - **Feature Attribution Charting**: Compares and renders feature importances using dynamic gradient charts powered by Recharts.
 - **Training Analysis Summary**: Generates a detailed natural language summary explaining hyperparameter convergence and model choices.
 
-### 📑 Publication-Grade PDF Reports
+### Publication-Grade PDF Reports
 - **Dynamic ReportLab PDF Engine**: Generates a styled multi-page PDF document on completion of a training run.
 - **Report Elements**: Includes cover page, metadata tables, model leaderboard, feature importances, and analytical summaries.
 
@@ -58,19 +58,19 @@ graph TD
     Render -->|PDF Downloads| SupaStorage
 ```
 
-### 💻 Frontend (Vercel)
+### Frontend (Vercel)
 - **Next.js & React**: Implements a client-side layout with a left sidebar navigation aside panel.
 - **Editorial Horizon Design System**: Uses a warm color palette (cream/charcoal canvas, brand orange highlights, custom light/dark modes) using vanilla CSS variables.
 - **Dynamic Charts**: Uses Recharts to visualize model metrics and feature rankings.
 - **Hydration & Polling Safety**: Employs client-only mounts and catches transient network drops as warnings, protecting the UX from developer overlay crashes during backend updates.
 
-### ⚙️ Backend (Render)
+### Backend (Render)
 - **FastAPI**: Serves the REST API using Python 3.12+.
 - **SQLAlchemy ORM**: Connects to the database with SQLite fallback.
 - **Supabase Storage Connector**: Uploads files to buckets, bypassing local disk storage.
 - **CORS Trailing-Slash Sanitizer**: Automatically cleans URL lists to prevent browser blocks.
 
-### 🗄️ Database & Storage (Supabase)
+### Database & Storage (Supabase)
 - **Supabase PostgreSQL**: Persists AutoML records (`jobs` and `meta_memory` tables).
 - **Supabase Private Buckets**:
   - `datasets`: Houses uploaded `{job_id}.csv` files.
@@ -142,7 +142,7 @@ sequenceDiagram
 
 To test the application locally with fallback SQLite and local storage mechanisms (or by configuring live Supabase environment parameters in `.env`), follow these commands:
 
-### ⚙️ Starting the FastAPI Backend
+### Starting the FastAPI Backend
 Ensure Python 3.12+ and virtual environment dependencies are installed:
 ```powershell
 # Navigate to the backend directory
@@ -154,7 +154,7 @@ cd backend
 - **Local API Host:** [http://127.0.0.1:8000](http://127.0.0.1:8000)
 - **Interactive Documentation (Swagger UI):** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
-### 💻 Starting the Next.js Frontend
+### Starting the Next.js Frontend
 Ensure Node.js is installed:
 ```powershell
 # Navigate to the frontend directory

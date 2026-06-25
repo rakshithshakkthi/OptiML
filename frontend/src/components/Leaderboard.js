@@ -75,7 +75,7 @@ export default function Leaderboard({ leaderboard, featureImportances }) {
                   }}
                 >
                   <td style={{ fontWeight: '700', paddingLeft: idx === 0 ? '0.75rem' : '1rem', color: idx === 0 ? 'var(--accent-color)' : 'var(--text-primary)' }}>
-                    {idx === 0 ? '🏆 1' : idx + 1}
+                    {idx + 1}
                   </td>
                   <td style={{ fontWeight: idx === 0 ? '700' : '500', color: 'var(--text-primary)' }}>
                     {model.model} {idx === 0 && <span style={{ fontSize: '9px', backgroundColor: 'var(--accent-color)', color: '#ffffff', padding: '2px 6px', borderRadius: '4px', marginLeft: '0.5rem', fontWeight: '700', letterSpacing: '0.05em' }}>OPTIMAL PIPELINE</span>}
